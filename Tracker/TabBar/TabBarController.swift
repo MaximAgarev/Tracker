@@ -2,12 +2,14 @@ import UIKit
 
 final class TabBarController: UITabBarController {
     
+    var trackersViewController: UINavigationController = UINavigationController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.tabBar.backgroundColor = .ypWhite
         
-        let trackersViewController = UINavigationController(rootViewController: TrackersViewController())
+        trackersViewController = UINavigationController(rootViewController: TrackersViewController())
         trackersViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
             image: UIImage(named: "Trackers TabBar Icon"),
