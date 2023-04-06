@@ -4,7 +4,7 @@ struct Tracker: Hashable {
     let id: UInt
     let title: String
     let color: UIColor
-    let emoji: UIImage?
+    let emoji: String?
     let schedule: String?
 }
 

@@ -20,10 +20,15 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
         super.viewDidLoad()
         
 #warning ("Remove dummy for prod")
-        let tracker1 = Tracker(id: 1, title: "Кошка заслонила камеру на созвоне", color: .ypRed!, emoji: nil, schedule: nil)
-        let tracker2 = Tracker(id: 1, title: "Свидания в апреле", color: .ypRed!, emoji: nil, schedule: nil)
-        let trackerCategory = TrackerCategory(title: "Test category", trackers: [tracker1, tracker2])
-        categories.append(trackerCategory)
+        let tracker1 = Tracker(id: 1, title: "Кошка заслонила камеру на созвоне", color: .magenta, emoji: "🙂", schedule: nil)
+        let tracker2 = Tracker(id: 1, title: "Свидания в апреле", color: .green, emoji: "🌺", schedule: nil)
+        let trackerCategory1 = TrackerCategory(title: "Радостные мелочи", trackers: [tracker1, tracker2])
+        categories.append(trackerCategory1)
+        
+        let tracker3 = Tracker(id: 1, title: "Бабушка прислала открытку в вотсапе", color: .brown, emoji: "🥦", schedule: nil)
+        let tracker4 = Tracker(id: 1, title: "Хорошее настроение", color: .purple, emoji: "🥶", schedule: nil)
+        let trackerCategory2 = TrackerCategory(title: "Самочувствие", trackers: [tracker3, tracker4])
+        categories.append(trackerCategory2)
         
         guard let navigationController = navigationController else { return }
         let trackersView = TrackersView(frame: .zero,

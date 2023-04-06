@@ -21,7 +21,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
         )
-        collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: "trackerCell")
+        collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "trackerCell")
+        collectionView.register(TrackersHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "categoryHeader")
         return collectionView
     }()
     
@@ -129,31 +130,55 @@ final class TrackersView: UIView, TrackersViewProtocol {
 }
 
 extension TrackersView: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        guard let viewController = viewController else { return 0 }
+        return viewController.categories.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let viewController = viewController else { return 0 }
-        return viewController.categories[0].trackers.count
+        return viewController.categories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCollectionViewCell
-        
-        cell.titleLabel.text = viewController?.categories[indexPath.section].trackers[indexPath.row].title
-        cell.backgroundColor = .red
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
+        let tracker = viewController?.categories[indexPath.section].trackers[indexPath.row]
+        cell.colorCard.backgroundColor = tracker?.color
+        cell.titleLabel.text = tracker?.title
+        cell.emodjiLabel.text = tracker?.emoji
+        cell.trackButton.isChecked = false
+        cell.trackButton.tintColor = tracker?.color
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "categoryHeader", for: indexPath) as? TrackersHeader
+        view?.titleLabel.text = viewController?.categories[indexPath.section].title
+        return view!
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let headerHeight: Double = (section == 0 ? 42 : 18)
+        return CGSize(width: collectionView.frame.width, height: headerHeight)
     }
 }
 
 extension TrackersView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - 16 * 2 - 9
-        return CGSize(width: availableWidth / 2, height: 90)
+        return CGSize(width: availableWidth / 2, height: 148)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
     }
 }
