@@ -2,7 +2,6 @@ import UIKit
 
 protocol TrackersViewProtocol: AnyObject {
     var viewController: TrackersViewControllerProtocol? { get set }
-    var presenter: TrackersPresenterProtocol? { get set }
     
     func setNavigationBar()
     func setTrackersCollection(isEmpty: Bool)
@@ -12,7 +11,6 @@ protocol TrackersViewProtocol: AnyObject {
 final class TrackersView: UIView, TrackersViewProtocol {
     
     weak var viewController: TrackersViewControllerProtocol?
-    var presenter: TrackersPresenterProtocol?
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
     
@@ -79,9 +77,9 @@ final class TrackersView: UIView, TrackersViewProtocol {
     }
     
     @objc
-        func didTapAddTracker() {
-            print("Tap!")
-        }
+    func didTapAddTracker() {
+        viewController?.presentNewTrackerViewController()
+    }
     
 // MARK: - Trackers Collection
     func setTrackersCollection(isEmpty: Bool) {
@@ -91,7 +89,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
             return
         }
 
-        setupCollectionView()
+        setCollectionView()
     }
     
     func showEmptyTab() {
@@ -114,7 +112,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         ])
     }
     
-    func setupCollectionView() {
+    func setCollectionView() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(collectionView)
         NSLayoutConstraint.activate([
