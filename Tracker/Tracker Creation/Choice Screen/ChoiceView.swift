@@ -1,11 +1,11 @@
 import UIKit
 
-protocol NewTrackerViewProtocol: AnyObject {
-    var viewController: NewTrackerViewControllerProtocol? { get set }
+protocol ChoiceViewProtocol: AnyObject {
+    var viewController: ChoiceViewControllerProtocol? { get set }
 }
 
-final class NewTrackerView: UIView, NewTrackerViewProtocol {
-    weak var viewController: NewTrackerViewControllerProtocol?
+final class ChoiceView: UIView, ChoiceViewProtocol {
+    weak var viewController: ChoiceViewControllerProtocol?
     
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
@@ -38,7 +38,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return eventButton
     }()
         
-    init(frame: CGRect, viewController: NewTrackerViewControllerProtocol) {
+    init(frame: CGRect, viewController: ChoiceViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
         
@@ -88,12 +88,12 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     
     @objc
     func didTapHabitButton(){
-        viewController?.didTapHabitButton()
+        viewController?.presentNewTrackerViewController(isHabit: true)
     }
     
     @objc
     func didTapEventButton(){
-        viewController?.didTapEventButton()
+        viewController?.presentNewTrackerViewController(isHabit: false)
     }
     
     

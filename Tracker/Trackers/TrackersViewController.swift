@@ -39,9 +39,9 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     }
     
     func presentNewTrackerViewController() {
-        let tcvc = NewTrackerViewController()
-        tcvc.modalPresentationStyle = .popover
-        self.present(tcvc, animated: true)
+        let newTrackerViewController = ChoiceViewController()
+        newTrackerViewController.modalPresentationStyle = .popover
+        self.present(newTrackerViewController, animated: true)
     }
     
     //Dummy for development
