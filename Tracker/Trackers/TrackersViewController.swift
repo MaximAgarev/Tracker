@@ -46,13 +46,13 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     
     //Dummy for development
     func makeDummy() {
-                let tracker1 = Tracker(id: 1, title: "Кошка заслонила камеру на созвоне", color: .ypColorSelection1, emoji: "🙂", schedule: nil)
-                let tracker2 = Tracker(id: 1, title: "Свидания в апреле", color: .ypColorSelection2, emoji: "🌺", schedule: nil)
+                let tracker1 = Tracker(id: 1, title: "Кошка заслонила камеру на созвоне", color: .ypColorSelection[1], emoji: "🙂", schedule: nil)
+                let tracker2 = Tracker(id: 1, title: "Свидания в апреле", color: .ypColorSelection[2], emoji: "🌺", schedule: nil)
                 let trackerCategory1 = TrackerCategory(title: "Радостные мелочи", trackers: [tracker1, tracker2])
                 categories.append(trackerCategory1)
                 
-                let tracker3 = Tracker(id: 1, title: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🥦", schedule: nil)
-                let tracker4 = Tracker(id: 1, title: "Хорошее настроение", color: .ypColorSelection4, emoji: "🥶", schedule: nil)
+                let tracker3 = Tracker(id: 1, title: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection[3], emoji: "🥦", schedule: nil)
+                let tracker4 = Tracker(id: 1, title: "Хорошее настроение", color: .ypColorSelection[4], emoji: "🥶", schedule: nil)
                 let trackerCategory2 = TrackerCategory(title: "Самочувствие", trackers: [tracker3, tracker4])
                 categories.append(trackerCategory2)
     }

@@ -60,7 +60,14 @@ extension NewTrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmojiCell", for: indexPath) as? EmojiCell
         guard let cell = cell else { return EmojiCell() }
-        cell.titleLabel.text = emojies[indexPath.row]
+        if collectionView.tag == 1 {
+            cell.titleLabel.text = emojies[indexPath.row]
+        } else {
+            cell.layer.cornerRadius = 8
+            cell.layer.masksToBounds = true
+            cell.backgroundColor = .ypColorSelection[indexPath.row]
+        }
+        
         return cell
     }
 }
