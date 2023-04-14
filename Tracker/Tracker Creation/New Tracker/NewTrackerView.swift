@@ -6,7 +6,8 @@ protocol NewTrackerViewProtocol: AnyObject {
 
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
     weak var viewController: NewTrackerViewControllerProtocol?
-
+    
+// MARK: - Create elements
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
         guard let viewController = viewController else { return UILabel() }
@@ -16,27 +17,20 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return headerLabel
     }()
     
-    let scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
 
-    let scrollViewContainer: UIStackView = {
-        let view = UIStackView()
-        view.axis = .vertical
-        view.spacing = 24
-        view.layoutMargins = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
-        view.isLayoutMarginsRelativeArrangement = true
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let redView: UIView = {
-        let view = UIView()
-        view.heightAnchor.constraint(equalToConstant: 1000).isActive = true
-        view.backgroundColor = .red
-        return view
+    private lazy var scrollViewStack: UIStackView = {
+        let scrollViewStack = UIStackView()
+        scrollViewStack.axis = .vertical
+        scrollViewStack.spacing = 24
+        scrollViewStack.layoutMargins = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        scrollViewStack.isLayoutMarginsRelativeArrangement = true
+        scrollViewStack.translatesAutoresizingMaskIntoConstraints = false
+        return scrollViewStack
     }()
     
     private lazy var trackerNameLabel: UITextField = {
@@ -92,19 +86,33 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return colorCollection
     }()
     
+    let buttonsStack: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
+        view.spacing = 8
+        view.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        view.isLayoutMarginsRelativeArrangement = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var cancelButton: UIButton = {
-        let createButton = UIButton()
-        createButton.layer.cornerRadius = 16
-        createButton.layer.masksToBounds = true
-        createButton.backgroundColor = .ypGray
-        createButton.setTitle("Отменить", for: .normal)
-        createButton.setTitleColor(.ypWhite, for: .normal)
-        createButton.titleLabel?.font = .systemFont(ofSize: 16)
-        return createButton
+        let cancelButton = UIButton()
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+        cancelButton.layer.cornerRadius = 16
+        cancelButton.layer.masksToBounds = true
+        cancelButton.backgroundColor = .ypWhite
+        cancelButton.layer.borderWidth = 1
+        cancelButton.layer.borderColor = CGColor(red: 0.96, green: 0.42, blue: 0.42, alpha: 1)
+        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.setTitleColor(.ypRed, for: .normal)
+        cancelButton.titleLabel?.font = .systemFont(ofSize: 16)
+        return cancelButton
     }()
 
     private lazy var createButton: UIButton = {
         let createButton = UIButton()
+        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         createButton.layer.cornerRadius = 16
         createButton.layer.masksToBounds = true
         createButton.backgroundColor = .ypGray
@@ -113,42 +121,30 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         createButton.titleLabel?.font = .systemFont(ofSize: 16)
         return createButton
     }()
-        
+       
+// MARK: -
     init(frame: CGRect, viewController: NewTrackerViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
         
         self.backgroundColor = .ypWhite
         
-        addSubview(scrollView)
-        scrollView.addSubview(scrollViewContainer)
-        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 63).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        scrollViewContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        scrollViewContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        scrollViewContainer.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        scrollViewContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        // this is important for scrolling
-        scrollViewContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-        
-        scrollViewContainer.backgroundColor = .brown
         addHeaderLabel()
+        addStack()
         addTrackerNameLabel()
         addTrackerCategoryTable()
         addEmojiLabel()
         addEmojiCollection()
         addColorLabel()
         addColorCollection()
-        scrollViewContainer.addArrangedSubview(redView)
-//        addCreateButton()
+        addButtonsStack()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+//MARK: - Add elements
     func addHeaderLabel() {
         addSubview(headerLabel)
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -158,32 +154,48 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         ])
     }
     
+    func addStack() {
+        addSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 63),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        scrollView.addSubview(scrollViewStack)
+        NSLayoutConstraint.activate([
+            scrollViewStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        ])
+    }
+    
     func addTrackerNameLabel() {
-        scrollViewContainer.addArrangedSubview(trackerNameLabel)
+        scrollViewStack.addArrangedSubview(trackerNameLabel)
         trackerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             trackerNameLabel.heightAnchor.constraint(equalToConstant: 60),
-//            trackerNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 87),
             trackerNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             trackerNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
             ])
     }
 
     func addTrackerCategoryTable() {
-        scrollViewContainer.addArrangedSubview(trackerCategoryTable)
+        scrollViewStack.addArrangedSubview(trackerCategoryTable)
         trackerCategoryTable.translatesAutoresizingMaskIntoConstraints = false
         guard let viewController = viewController else { return }
         NSLayoutConstraint.activate([
             trackerCategoryTable.widthAnchor.constraint(equalTo:widthAnchor, constant: -40),
             trackerCategoryTable.heightAnchor.constraint(equalToConstant: viewController.isHabit ? 150 : 75),
-//            trackerCategoryTable.topAnchor.constraint(equalTo: trackerNameLabel.bottomAnchor, constant: 24),
             trackerCategoryTable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             trackerCategoryTable.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
             ])
     }
 
     func addEmojiLabel() {
-        scrollViewContainer.addArrangedSubview(emojiLabel)
+        scrollViewStack.addArrangedSubview(emojiLabel)
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
@@ -191,7 +203,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
 
     func addEmojiCollection() {
-        scrollViewContainer.addArrangedSubview(emojiCollection)
+        scrollViewStack.addArrangedSubview(emojiCollection)
         emojiCollection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             emojiCollection.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor),
@@ -202,15 +214,16 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
     
     func addColorLabel() {
-        scrollViewContainer.addArrangedSubview(colorLabel)
+        scrollViewStack.addArrangedSubview(colorLabel)
         colorLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             colorLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
+            colorLabel.topAnchor.constraint(equalTo: emojiCollection.bottomAnchor, constant: 16)
             ])
     }
     
     func addColorCollection() {
-        scrollViewContainer.addArrangedSubview(colorCollection)
+        scrollViewStack.addArrangedSubview(colorCollection)
         colorCollection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             colorCollection.topAnchor.constraint(equalTo: colorLabel.bottomAnchor),
@@ -219,21 +232,28 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
             colorCollection.heightAnchor.constraint(equalToConstant: 204)
         ])
     }
-
-//    func addCreateButton() {
-//        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
-//        contentView.addSubview(createButton)
-//            createButton.translatesAutoresizingMaskIntoConstraints = false
-//            NSLayoutConstraint.activate([
-//                createButton.heightAnchor.constraint(equalToConstant: 60),
-//                createButton.topAnchor.constraint(equalTo: bottomAnchor),
-//                createButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-//                createButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
-//                ])
-//        }
+    
+    func addButtonsStack() {
+        scrollViewStack.addArrangedSubview(buttonsStack)
+        buttonsStack.distribution = .fillEqually
+        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonsStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            buttonsStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonsStack.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 16),
+            buttonsStack.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        buttonsStack.addArrangedSubview(cancelButton)
+        buttonsStack.addArrangedSubview(createButton)
+    }
 
     @objc
     func didTapCreateButton(){
         viewController?.didTapCreateButton()
+    }
+    
+    @objc
+    func didTapCancelButton(){
+        viewController?.didTapCancelButton()
     }
 }

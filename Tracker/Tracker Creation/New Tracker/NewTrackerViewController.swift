@@ -4,6 +4,7 @@ protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
     func didTapCreateButton()
+    func didTapCancelButton()
 }
 
 final class NewTrackerViewController: UIViewController, NewTrackerViewControllerProtocol {
@@ -20,6 +21,11 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     func didTapCreateButton(){
         print("Create!")
     }
+    
+    func didTapCancelButton(){
+        print("Cancel!")
+    }
+    
 }
 
 extension NewTrackerViewController: UITableViewDataSource {
