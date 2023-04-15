@@ -41,6 +41,15 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         trackerNameLabel.placeholder = "Введите название трекера"
         return trackerNameLabel
     }()
+    
+    private lazy var longNameWarning: UILabel = {
+        let longNameWarning = UILabel()
+        longNameWarning.text = "Ограничение 38 символов"
+        longNameWarning.textColor = .ypRed
+        longNameWarning.font = .systemFont(ofSize: 17)
+        longNameWarning.textAlignment = .center
+        return longNameWarning
+    }()
 
     private lazy var trackerCategoryTable: UITableView = {
         let trackerCategoryTable = UITableView()
@@ -132,6 +141,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         addHeaderLabel()
         addStack()
         addTrackerNameLabel()
+        addLongNameWarning()
         addTrackerCategoryTable()
         addEmojiLabel()
         addEmojiCollection()
@@ -180,6 +190,15 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
             trackerNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             trackerNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
             ])
+    }
+    
+    func addLongNameWarning() {
+        scrollViewStack.addArrangedSubview(longNameWarning)
+        NSLayoutConstraint.activate([
+            longNameWarning.topAnchor.constraint(equalTo: trackerNameLabel.bottomAnchor, constant: 8),
+            longNameWarning.centerXAnchor.constraint(equalTo: centerXAnchor)
+        ])
+        longNameWarning.isHidden = true
     }
 
     func addTrackerCategoryTable() {
@@ -249,6 +268,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
 
     @objc
     func didTapCreateButton(){
+        longNameWarning.isHidden.toggle()
         viewController?.didTapCreateButton()
     }
     
