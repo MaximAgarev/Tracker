@@ -5,6 +5,7 @@ protocol NewTrackerViewProtocol: AnyObject {
 }
 
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
+    
     weak var viewController: NewTrackerViewControllerProtocol?
     
 // MARK: - Create elements
@@ -39,6 +40,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         trackerNameLabel.layer.cornerRadius = 16
         trackerNameLabel.layer.masksToBounds = true
         trackerNameLabel.placeholder = "Введите название трекера"
+        trackerNameLabel.delegate = self
         return trackerNameLabel
     }()
     
@@ -72,7 +74,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
 
     private lazy var emojiCollection: UICollectionView = {
         let emojiCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        emojiCollection.register(EmojiCell.self, forCellWithReuseIdentifier: "EmojiCell")
+        emojiCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "EmojiCell")
         emojiCollection.tag = 1
         emojiCollection.dataSource = viewController
         emojiCollection.delegate = viewController
@@ -89,7 +91,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     
     private lazy var colorCollection: UICollectionView = {
         let colorCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        colorCollection.register(EmojiCell.self, forCellWithReuseIdentifier: "EmojiCell")
+        colorCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "EmojiCell")
         colorCollection.dataSource = viewController
         colorCollection.delegate = viewController
         return colorCollection
@@ -223,6 +225,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
 
     func addEmojiCollection() {
         scrollViewStack.addArrangedSubview(emojiCollection)
+        emojiCollection.allowsMultipleSelection = false
         emojiCollection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             emojiCollection.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor),
@@ -243,6 +246,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     
     func addColorCollection() {
         scrollViewStack.addArrangedSubview(colorCollection)
+        colorCollection.allowsMultipleSelection = false
         colorCollection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             colorCollection.topAnchor.constraint(equalTo: colorLabel.bottomAnchor),
@@ -275,5 +279,18 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     @objc
     func didTapCancelButton(){
         viewController?.didTapCancelButton()
+    }
+}
+
+extension NewTrackerView: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let textFieldText = textField.text,
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+            return false
+        }
+        let substringToReplace = textFieldText[rangeOfTextToReplace]
+        let count = textFieldText.count - substringToReplace.count + string.count
+        longNameWarning.isHidden = count < 38
+        return count <= 38
     }
 }

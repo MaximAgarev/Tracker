@@ -23,7 +23,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     }
     
     func didTapCancelButton(){
-        print("Cancel!")
+        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
 }
@@ -64,14 +64,19 @@ extension NewTrackerViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmojiCell", for: indexPath) as? EmojiCell
-        guard let cell = cell else { return EmojiCell() }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmojiCell", for: indexPath) as? CollectionCell
+        guard let cell = cell else { return CollectionCell() }
+        cell.layer.cornerRadius = 16
+        cell.layer.masksToBounds = true
+        
         if collectionView.tag == 1 {
             cell.titleLabel.text = emojies[indexPath.row]
         } else {
-            cell.layer.cornerRadius = 8
-            cell.layer.masksToBounds = true
-            cell.backgroundColor = .ypColorSelection[indexPath.row]
+            
+//            cell.backgroundColor = .ypColorSelection[indexPath.row]
+            cell.layer.borderWidth = 3
+            cell.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
+            cell.titleLabel.backgroundColor = .ypRed
         }
         
         return cell
@@ -80,14 +85,25 @@ extension NewTrackerViewController: UICollectionViewDataSource {
 
 extension NewTrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 40, height: 40)
+        return CGSize(width: 52, height: 52)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 17
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 30, left: 24, bottom: 30, right: 24)
+        return UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+}
+
+extension NewTrackerViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
+        cell?.backgroundColor = .ypLightGray
     }
 }
