@@ -60,17 +60,12 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
-        navigationBar.addSubview(datePicker)
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            datePicker.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 47),
-            datePicker.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -16)
-        ])
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         // Search bar
         let searchController = UISearchController()
         searchController.searchBar.placeholder = "Поиск"
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.searchTextField.clearButtonMode = .never
         // TODO: Make delegate
         navigationItem.searchController = searchController

@@ -2,6 +2,8 @@ import UIKit
 
 protocol NewTrackerViewProtocol: AnyObject {
     var viewController: NewTrackerViewControllerProtocol? { get set }
+    
+    func updateCategoryCell(value: String?, isCategory: Bool)
 }
 
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
@@ -40,6 +42,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         trackerNameLabel.layer.cornerRadius = 16
         trackerNameLabel.layer.masksToBounds = true
         trackerNameLabel.placeholder = "Введите название трекера"
+        trackerNameLabel.clearButtonMode = .whileEditing
         trackerNameLabel.delegate = self
         return trackerNameLabel
     }()
@@ -58,7 +61,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         trackerCategoryTable.layer.cornerRadius = 16
         trackerCategoryTable.layer.masksToBounds = true
         trackerCategoryTable.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        trackerCategoryTable.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
+        trackerCategoryTable.register(CategoryCell.self, forCellReuseIdentifier: "CategoryCell")
         trackerCategoryTable.dataSource = viewController
         trackerCategoryTable.delegate = viewController
         return trackerCategoryTable
@@ -74,7 +77,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
 
     private lazy var emojiCollection: UICollectionView = {
         let emojiCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        emojiCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "EmojiCell")
+        emojiCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "CollectionCell")
+        emojiCollection.allowsMultipleSelection = false
         emojiCollection.tag = 1
         emojiCollection.dataSource = viewController
         emojiCollection.delegate = viewController
@@ -91,7 +95,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     
     private lazy var colorCollection: UICollectionView = {
         let colorCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        colorCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "EmojiCell")
+        colorCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "CollectionCell")
+        colorCollection.allowsMultipleSelection = false
         colorCollection.dataSource = viewController
         colorCollection.delegate = viewController
         return colorCollection
@@ -279,6 +284,18 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     @objc
     func didTapCancelButton(){
         viewController?.didTapCancelButton()
+    }
+    
+    func updateCategoryCell(value: String?, isCategory: Bool){
+        let indexPath: IndexPath = isCategory ? [0,0] : [0, 1]
+        let cell = trackerCategoryTable.cellForRow(at: indexPath) as? CategoryCell
+        
+        if value == nil {
+            cell?.oneRow()
+        } else {
+            cell?.valueLabel.text = value
+            cell?.twoRows()
+        }
     }
 }
 
