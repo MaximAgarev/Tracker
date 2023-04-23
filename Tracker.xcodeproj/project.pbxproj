@@ -15,13 +15,17 @@
 		D089E5DB29DC4AE0005F9FAF /* TrackersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5DA29DC4AE0005F9FAF /* TrackersView.swift */; };
 		D089E5DF29DD7C14005F9FAF /* TrackersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5DE29DD7C14005F9FAF /* TrackersCell.swift */; };
 		D089E5E329DD86DA005F9FAF /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5E229DD86DA005F9FAF /* Models.swift */; };
-		D089E5E929DD9ECA005F9FAF /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5E829DD9ECA005F9FAF /* UIFont+Extensions.swift */; };
 		D089E5ED29DDD956005F9FAF /* Emojies.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5EC29DDD956005F9FAF /* Emojies.swift */; };
 		D089E5EF29DEDC88005F9FAF /* TrackersHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5EE29DEDC88005F9FAF /* TrackersHeader.swift */; };
 		D089E5F129DF54B2005F9FAF /* TrackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5F029DF54B2005F9FAF /* TrackButton.swift */; };
 		D089E5F329DF6AB8005F9FAF /* ChoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */; };
 		D089E5F729DF6DC0005F9FAF /* ChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5F629DF6DC0005F9FAF /* ChoiceView.swift */; };
 		D0CACCC229F2E4A300BD9D91 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC129F2E4A300BD9D91 /* CategoryCell.swift */; };
+		D0CACCC629F4211400BD9D91 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */; };
+		D0CACCC829F4214100BD9D91 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC729F4214100BD9D91 /* ScheduleView.swift */; };
+		D0CACCCA29F5451E00BD9D91 /* Weekdays.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC929F5451E00BD9D91 /* Weekdays.swift */; };
+		D0CACCCC29F5509600BD9D91 /* EditCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCCB29F5509600BD9D91 /* EditCategoryViewController.swift */; };
+		D0CACCD029F580F400BD9D91 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCCF29F580F400BD9D91 /* Storage.swift */; };
 		D0EEE2E929EDBF260021576D /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEE2E829EDBF260021576D /* CategoriesViewController.swift */; };
 		D0F1B6F529E04FE200471968 /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F1B6F429E04FE200471968 /* NewTrackerViewController.swift */; };
 		D0F1B6F729E04FF500471968 /* NewTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F1B6F629E04FF500471968 /* NewTrackerView.swift */; };
@@ -43,13 +47,17 @@
 		D089E5DA29DC4AE0005F9FAF /* TrackersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersView.swift; sourceTree = "<group>"; };
 		D089E5DE29DD7C14005F9FAF /* TrackersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCell.swift; sourceTree = "<group>"; };
 		D089E5E229DD86DA005F9FAF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		D089E5E829DD9ECA005F9FAF /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		D089E5EC29DDD956005F9FAF /* Emojies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emojies.swift; sourceTree = "<group>"; };
 		D089E5EE29DEDC88005F9FAF /* TrackersHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersHeader.swift; sourceTree = "<group>"; };
 		D089E5F029DF54B2005F9FAF /* TrackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackButton.swift; sourceTree = "<group>"; };
 		D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceViewController.swift; sourceTree = "<group>"; };
 		D089E5F629DF6DC0005F9FAF /* ChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceView.swift; sourceTree = "<group>"; };
 		D0CACCC129F2E4A300BD9D91 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
+		D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		D0CACCC729F4214100BD9D91 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		D0CACCC929F5451E00BD9D91 /* Weekdays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekdays.swift; sourceTree = "<group>"; };
+		D0CACCCB29F5509600BD9D91 /* EditCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryViewController.swift; sourceTree = "<group>"; };
+		D0CACCCF29F580F400BD9D91 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		D0EEE2E829EDBF260021576D /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		D0F1B6F429E04FE200471968 /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
 		D0F1B6F629E04FF500471968 /* NewTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerView.swift; sourceTree = "<group>"; };
@@ -79,9 +87,9 @@
 			isa = PBXGroup;
 			children = (
 				D089E5D429DA2BC7005F9FAF /* UIColor+Extensions.swift */,
-				D089E5E829DD9ECA005F9FAF /* UIFont+Extensions.swift */,
 				D089E5EC29DDD956005F9FAF /* Emojies.swift */,
 				D0F1B6FA29E3155B00471968 /* UITextField+Extension.swift */,
+				D0CACCC929F5451E00BD9D91 /* Weekdays.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -133,12 +141,39 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		D0EEE2E729EDBED30021576D /* Settings */ = {
+		D0CACCC329F420AE00BD9D91 /* Category */ = {
 			isa = PBXGroup;
 			children = (
 				D0EEE2E829EDBF260021576D /* CategoriesViewController.swift */,
 				D02E3CB429F16CC300DFE26B /* EmptyView.swift */,
 				D02E3CB629F1A05000DFE26B /* CategoriesView.swift */,
+				D0CACCCB29F5509600BD9D91 /* EditCategoryViewController.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		D0CACCC429F420D300BD9D91 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */,
+				D0CACCC729F4214100BD9D91 /* ScheduleView.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		D0CACCCE29F580E000BD9D91 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				D0CACCCF29F580F400BD9D91 /* Storage.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		D0EEE2E729EDBED30021576D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D0CACCC329F420AE00BD9D91 /* Category */,
+				D0CACCC429F420D300BD9D91 /* Schedule */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -156,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				D0F1B6F229E04F1D00471968 /* Type */,
-				D0EEE2E729EDBED30021576D /* Settings */,
 				D0F1B6F429E04FE200471968 /* NewTrackerViewController.swift */,
 				D0F1B6F629E04FF500471968 /* NewTrackerView.swift */,
 				D0FF0D5229E4898200837748 /* CollectionCell.swift */,
@@ -168,6 +202,7 @@
 		D0F9C40829DA11E6009C7686 = {
 			isa = PBXGroup;
 			children = (
+				D0EEE2E729EDBED30021576D /* Settings */,
 				D0F9C41329DA11E6009C7686 /* Tracker */,
 				D0F9C41229DA11E6009C7686 /* Products */,
 			);
@@ -184,11 +219,12 @@
 		D0F9C41329DA11E6009C7686 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				D0CACCCE29F580E000BD9D91 /* Storage */,
+				D089E5D829DC48C2005F9FAF /* Application */,
 				D089E5D629DC486A005F9FAF /* Main Screen */,
 				D0F1B6F329E04F3300471968 /* New Tracker */,
 				D089E5D729DC4886005F9FAF /* Statistics */,
 				D089E5D929DC48EC005F9FAF /* TabBar */,
-				D089E5D829DC48C2005F9FAF /* Application */,
 				D089E5D329DA2B6F005F9FAF /* Helpers */,
 				D0F9C41D29DA11EB009C7686 /* Assets.xcassets */,
 				D0F9C42229DA11EB009C7686 /* Info.plist */,
@@ -269,17 +305,21 @@
 				D0CACCC229F2E4A300BD9D91 /* CategoryCell.swift in Sources */,
 				D089E5ED29DDD956005F9FAF /* Emojies.swift in Sources */,
 				D089E5F129DF54B2005F9FAF /* TrackButton.swift in Sources */,
+				D0CACCC629F4211400BD9D91 /* ScheduleViewController.swift in Sources */,
 				D089E5DF29DD7C14005F9FAF /* TrackersCell.swift in Sources */,
 				D089E5F329DF6AB8005F9FAF /* ChoiceViewController.swift in Sources */,
-				D089E5E929DD9ECA005F9FAF /* UIFont+Extensions.swift in Sources */,
 				D089E5D229DA26E3005F9FAF /* TabBarController.swift in Sources */,
 				D089E5DB29DC4AE0005F9FAF /* TrackersView.swift in Sources */,
 				D0F9C41929DA11E6009C7686 /* TrackersViewController.swift in Sources */,
+				D0CACCC829F4214100BD9D91 /* ScheduleView.swift in Sources */,
 				D02E3CB729F1A05000DFE26B /* CategoriesView.swift in Sources */,
 				D0F1B6F529E04FE200471968 /* NewTrackerViewController.swift in Sources */,
 				D0F1B6FB29E3155B00471968 /* UITextField+Extension.swift in Sources */,
 				D0F9C41529DA11E6009C7686 /* AppDelegate.swift in Sources */,
+				D0CACCD029F580F400BD9D91 /* Storage.swift in Sources */,
 				D089E5F729DF6DC0005F9FAF /* ChoiceView.swift in Sources */,
+				D0CACCCC29F5509600BD9D91 /* EditCategoryViewController.swift in Sources */,
+				D0CACCCA29F5451E00BD9D91 /* Weekdays.swift in Sources */,
 				D0F9C41729DA11E6009C7686 /* SceneDelegate.swift in Sources */,
 				D089E5D529DA2BC7005F9FAF /* UIColor+Extensions.swift in Sources */,
 				D0EEE2E929EDBF260021576D /* CategoriesViewController.swift in Sources */,

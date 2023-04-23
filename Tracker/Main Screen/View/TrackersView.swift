@@ -131,7 +131,8 @@ extension TrackersView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let viewController = viewController else { return 0 }
-        return viewController.categories[section].trackers.count
+        let trackers = viewController.categories[section].trackers
+        return trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

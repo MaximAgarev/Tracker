@@ -36,7 +36,6 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         self.backgroundColor = .ypWhite
         
         addSubviews()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -51,17 +50,17 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
             addCategoryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             addCategoryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             addCategoryButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50)
-            ])
+        ])
         
         addSubview(categoriesTable)
+        let rowsCount = CGFloat(viewController?.storage?.count() ?? 0)
         NSLayoutConstraint.activate([
             categoriesTable.topAnchor.constraint(equalTo: topAnchor, constant: 87),
-            categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -24),
+            categoriesTable.heightAnchor.constraint(equalToConstant: rowsCount * 75),
+            categoriesTable.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor, constant: -24),
             categoriesTable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             categoriesTable.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
-        
-        
     }
     
     @objc
@@ -69,3 +68,4 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         viewController?.didTapAddCategoryButton()
     }
 }
+

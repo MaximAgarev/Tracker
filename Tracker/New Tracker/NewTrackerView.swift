@@ -7,7 +7,6 @@ protocol NewTrackerViewProtocol: AnyObject {
 }
 
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
-    
     weak var viewController: NewTrackerViewControllerProtocol?
     
 // MARK: - Create elements
@@ -36,8 +35,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return scrollViewStack
     }()
     
-    private lazy var trackerNameLabel: UITextField = {
-        let trackerNameLabel = TextField() //UITextField()
+    private lazy var trackerNameLabel: TextField = {
+        let trackerNameLabel = TextField()
         trackerNameLabel.backgroundColor = .ypBackground
         trackerNameLabel.layer.cornerRadius = 16
         trackerNameLabel.layer.masksToBounds = true
@@ -290,12 +289,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         let indexPath: IndexPath = isCategory ? [0,0] : [0, 1]
         let cell = trackerCategoryTable.cellForRow(at: indexPath) as? CategoryCell
         
-        if value == nil {
-            cell?.oneRow()
-        } else {
-            cell?.valueLabel.text = value
-            cell?.twoRows()
-        }
+        cell?.valueLabel.text = value
+        cell?.addValue()
     }
 }
 

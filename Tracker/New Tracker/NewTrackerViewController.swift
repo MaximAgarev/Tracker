@@ -58,7 +58,14 @@ extension NewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath.row == 0 { presentCategoriesViewController()}
+        indexPath.row == 0 ? presentCategoriesViewController() : presentScheduleViewController()
+    }
+    
+    func presentScheduleViewController() {
+        let scheduleViewController = ScheduleViewController()
+        scheduleViewController.delegate = self
+        scheduleViewController.modalPresentationStyle = .popover
+        self.present(scheduleViewController, animated: true)
     }
     
     func presentCategoriesViewController() {

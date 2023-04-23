@@ -1,16 +1,20 @@
 import UIKit
 
 protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITableViewDataSource {
+    var storage: TrackerStorageProtocol? { get set }
     var categoriesView: CategoriesViewProtocol? { get set }
     var delegate: NewTrackerViewController? { get set }
     
+    func setView()
     func didTapAddCategoryButton()
 }
 
 final class CategoriesViewController: UIViewController, CategoriesViewControllerProtocol {
-    
+    var storage: TrackerStorageProtocol?
     var categoriesView: CategoriesViewProtocol?
     var delegate: NewTrackerViewController?
+    
+    var storedCategories: [TrackerCategory] = []
     
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
@@ -23,14 +27,26 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let categoriesView = EmptyView(frame: .zero, viewController: self)
-        let categoriesView = CategoriesView(frame: .zero, viewController: self)
-        self.view = categoriesView
+        storage = TrackerStorage.shared
+        guard let storage = storage else { return }
+        storedCategories = storage.loadCategories()
         
-        addHeaderLabel()
+        setView()
     }
     
-    func addHeaderLabel() {
+    func setView() {
+        guard let storage = storage else { return }
+        storedCategories = storage.loadCategories()
+        if storedCategories.count == 0 {
+            self.view = EmptyView(frame: .zero, viewController: self)
+        } else {
+            self.view = CategoriesView(frame: .zero, viewController: self)
+        }
+        addHeaderLabel()
+        self.view.layoutIfNeeded()
+    }
+
+    private func addHeaderLabel() {
         view.addSubview(headerLabel)
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -40,13 +56,13 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     }
     
     func didTapAddCategoryButton() {
-        print("Tap!")
+        presentEditCategoryViewController(isNew: true, editTitle: nil)
     }
 }
 
 extension CategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 25
+        return storedCategories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -54,7 +70,7 @@ extension CategoriesViewController: UITableViewDataSource {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
         }
-        cell.textLabel?.text = "Test"
+        cell.textLabel?.text = storedCategories[indexPath.row].title
         cell.accessoryType = .none
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .none
@@ -83,14 +99,29 @@ extension CategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         
         return UIContextMenuConfiguration(actionProvider:  { actions in
+            let cell = tableView.cellForRow(at: indexPath)
+            let title = cell?.textLabel?.text
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { [weak self] _ in
-                    print(indexPath)
+                    self?.presentEditCategoryViewController(isNew: false, editTitle: title)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
-                    print(indexPath)
+                    let categoriesView = self?.view as? CategoriesView
+                    self?.storage?.deleteCategory(categoryTitle: title ?? "")
+                    guard let storage = self?.storage else { return }
+                    self?.storedCategories = storage.loadCategories()
+                    self?.setView()
                 }),
             ])
         })
+    }
+    
+    func presentEditCategoryViewController(isNew: Bool, editTitle: String?) {
+        let editCategoryViewController = EditCategoryViewController()
+        editCategoryViewController.isNew = isNew
+        editCategoryViewController.editTitle = editTitle
+        editCategoryViewController.delegate = self
+        editCategoryViewController.modalPresentationStyle = .popover
+        self.present(editCategoryViewController, animated: true)
     }
 }
