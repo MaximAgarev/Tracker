@@ -15,7 +15,7 @@ final class EditCategoryViewController: UIViewController {
         return headerLabel
     }()
     
-    private lazy var categoryNameLabel: TextField = {
+    private lazy var categoryNameTextField: TextField = {
         let categoryNameLabel = TextField()
         categoryNameLabel.translatesAutoresizingMaskIntoConstraints = false
         categoryNameLabel.backgroundColor = .ypBackground
@@ -23,6 +23,7 @@ final class EditCategoryViewController: UIViewController {
         categoryNameLabel.layer.masksToBounds = true
         categoryNameLabel.placeholder = "Введите название трекера"
         categoryNameLabel.clearButtonMode = .whileEditing
+        categoryNameLabel.delegate = self
         return categoryNameLabel
     }()
     
@@ -45,7 +46,7 @@ final class EditCategoryViewController: UIViewController {
         
         view.backgroundColor = .ypWhite
         addSubviews()
-        if !isNew { categoryNameLabel.text = editTitle }
+        if !isNew { categoryNameTextField.text = editTitle }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -60,12 +61,12 @@ final class EditCategoryViewController: UIViewController {
             headerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
-        view.addSubview(categoryNameLabel)
+        view.addSubview(categoryNameTextField)
         NSLayoutConstraint.activate([
-            categoryNameLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
-            categoryNameLabel.heightAnchor.constraint(equalToConstant: 75),
-            categoryNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categoryNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            categoryNameTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
+            categoryNameTextField.heightAnchor.constraint(equalToConstant: 75),
+            categoryNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoryNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
         
         view.addSubview(isDoneButton)
@@ -81,7 +82,7 @@ final class EditCategoryViewController: UIViewController {
     func didTapAddCategoryButton(){
         let storage = TrackerStorage.shared
         var storedCategories = storage.loadCategories()
-        guard let title = categoryNameLabel.text else { return }
+        guard let title = categoryNameTextField.text else { return }
         for category in storedCategories {
             if category.title == title { return }
         }
@@ -92,3 +93,9 @@ final class EditCategoryViewController: UIViewController {
     }
 }
 
+extension EditCategoryViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        categoryNameTextField.resignFirstResponder()
+        return true
+    }
+}
