@@ -2,13 +2,13 @@ import UIKit
 
 class TextField: UITextField {
 
-    let inset: CGFloat = 16
+    var insets: UIEdgeInsets = UIEdgeInsets()
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: inset, dy: inset)
+        return bounds.inset(by: insets)
     }
 
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: inset, dy: inset)
+        return bounds.inset(by: insets)
     }
 }

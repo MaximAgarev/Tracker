@@ -9,6 +9,8 @@ protocol NewTrackerViewProtocol: AnyObject {
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
     weak var viewController: NewTrackerViewControllerProtocol?
     
+    var spaceForErrorLabelConstraint: NSLayoutConstraint!
+    
 // MARK: - Create elements
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
@@ -25,20 +27,16 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-
-    private lazy var scrollViewStack: UIStackView = {
-        let scrollViewStack = UIStackView()
-        scrollViewStack.translatesAutoresizingMaskIntoConstraints = false
-        scrollViewStack.axis = .vertical
-        scrollViewStack.spacing = 24
-        scrollViewStack.layoutMargins = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
-        scrollViewStack.isLayoutMarginsRelativeArrangement = true
-        scrollViewStack.translatesAutoresizingMaskIntoConstraints = false
-        return scrollViewStack
+    
+    private lazy var contentView: UIView = {
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
     }()
     
     private lazy var trackerNameLabel: TextField = {
         let trackerNameLabel = TextField()
+        trackerNameLabel.insets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 41)
         trackerNameLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerNameLabel.backgroundColor = .ypBackground
         trackerNameLabel.layer.cornerRadius = 16
@@ -157,7 +155,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         self.backgroundColor = .ypWhite
         
         addHeaderLabel()
-        addStack()
+        addScrollContentView()
         addTrackerNameLabel()
         addLongNameWarning()
         addTrackerCategoryTable()
@@ -181,40 +179,34 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         ])
     }
     
-    func addStack() {
+    func addScrollContentView() {
         addSubview(scrollView)
-        NSLayoutConstraint.deactivate(scrollView.constraints)
-        
+        scrollView.addSubview(contentView)
         NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 63),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 63),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-        scrollView.addSubview(scrollViewStack)
-        NSLayoutConstraint.deactivate(scrollViewStack.constraints)
-        NSLayoutConstraint.activate([
-            scrollViewStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            scrollViewStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            scrollViewStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            scrollViewStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            scrollViewStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+            ])
     }
     
     func addTrackerNameLabel() {
-        scrollViewStack.addArrangedSubview(trackerNameLabel)
-        NSLayoutConstraint.deactivate(trackerNameLabel.constraints)
+        contentView.addSubview(trackerNameLabel)
         NSLayoutConstraint.activate([
-            trackerNameLabel.heightAnchor.constraint(equalToConstant: 60),
+            trackerNameLabel.heightAnchor.constraint(equalToConstant: 75),
+            trackerNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             trackerNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             trackerNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
             ])
     }
     
     func addLongNameWarning() {
-        scrollViewStack.addArrangedSubview(longNameWarning)
-        NSLayoutConstraint.deactivate(longNameWarning.constraints)
+        contentView.addSubview(longNameWarning)
         NSLayoutConstraint.activate([
             longNameWarning.topAnchor.constraint(equalTo: trackerNameLabel.bottomAnchor, constant: 8),
             longNameWarning.centerXAnchor.constraint(equalTo: centerXAnchor)
@@ -223,10 +215,11 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
 
     func addTrackerCategoryTable() {
-        scrollViewStack.addArrangedSubview(trackerCategoryTable)
-        NSLayoutConstraint.deactivate(trackerCategoryTable.constraints)
+        contentView.addSubview(trackerCategoryTable)
+        spaceForErrorLabelConstraint = trackerCategoryTable.topAnchor.constraint(equalTo: trackerNameLabel.bottomAnchor, constant: 24)
         guard let viewController = viewController else { return }
         NSLayoutConstraint.activate([
+            spaceForErrorLabelConstraint,
             trackerCategoryTable.widthAnchor.constraint(equalTo:widthAnchor, constant: -40),
             trackerCategoryTable.heightAnchor.constraint(equalToConstant: viewController.isHabit ? 150 : 75),
             trackerCategoryTable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
@@ -235,17 +228,15 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
 
     func addEmojiLabel() {
-        scrollViewStack.addArrangedSubview(emojiLabel)
-        NSLayoutConstraint.deactivate(emojiLabel.constraints)
+        contentView.addSubview(emojiLabel)
         NSLayoutConstraint.activate([
-            emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
+            emojiLabel.topAnchor.constraint(equalTo: trackerCategoryTable.bottomAnchor, constant: 32),
+            emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28)
             ])
     }
 
     func addEmojiCollection() {
-        scrollViewStack.addArrangedSubview(emojiCollection)
-        emojiCollection.allowsMultipleSelection = false
-        NSLayoutConstraint.deactivate(emojiCollection.constraints)
+        contentView.addSubview(emojiCollection)
         NSLayoutConstraint.activate([
             emojiCollection.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor),
             emojiCollection.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -255,8 +246,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
     
     func addColorLabel() {
-        scrollViewStack.addArrangedSubview(colorLabel)
-        NSLayoutConstraint.deactivate(colorLabel.constraints)
+        contentView.addSubview(colorLabel)
         NSLayoutConstraint.activate([
             colorLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
             colorLabel.topAnchor.constraint(equalTo: emojiCollection.bottomAnchor, constant: 16)
@@ -264,7 +254,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
     
     func addColorCollection() {
-        scrollViewStack.addArrangedSubview(colorCollection)
+        contentView.addSubview(colorCollection)
         colorCollection.allowsMultipleSelection = false
         NSLayoutConstraint.deactivate(colorCollection.constraints)
         NSLayoutConstraint.activate([
@@ -276,7 +266,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
     
     func addButtonsStack() {
-        scrollViewStack.addArrangedSubview(buttonsStack)
+        contentView.addSubview(buttonsStack)
         buttonsStack.distribution = .fillEqually
         NSLayoutConstraint.deactivate(buttonsStack.constraints)
         NSLayoutConstraint.activate([
@@ -287,6 +277,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         ])
         buttonsStack.addArrangedSubview(cancelButton)
         buttonsStack.addArrangedSubview(createButton)
+        
+        contentView.bottomAnchor.constraint(equalTo: buttonsStack.bottomAnchor).isActive = true
     }
 
     @objc
@@ -317,7 +309,13 @@ extension NewTrackerView: UITextFieldDelegate {
         }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
-        longNameWarning.isHidden = count < 38
+        if count < 38 {
+            longNameWarning.isHidden = true
+            spaceForErrorLabelConstraint.constant = 24
+        } else {
+            longNameWarning.isHidden = false
+            spaceForErrorLabelConstraint.constant = 62
+        }
         return count <= 38
     }
     
