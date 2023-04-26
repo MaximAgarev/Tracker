@@ -32,7 +32,7 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
     init(frame: CGRect, viewController: CategoriesViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
-        
+                
         self.backgroundColor = .ypWhite
         
         addSubviews()
@@ -43,7 +43,6 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
     }
     
     func addSubviews() {
-        
         addSubview(addCategoryButton)
         NSLayoutConstraint.activate([
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
@@ -54,9 +53,12 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         
         addSubview(categoriesTable)
         let rowsCount = CGFloat(viewController?.storage?.count() ?? 0)
+        let rowsHeight = categoriesTable.heightAnchor.constraint(equalToConstant: rowsCount * 75)
+        rowsHeight.priority = UILayoutPriority(rawValue: 999)
+        rowsHeight.isActive = true
         NSLayoutConstraint.activate([
             categoriesTable.topAnchor.constraint(equalTo: topAnchor, constant: 87),
-            categoriesTable.heightAnchor.constraint(equalToConstant: rowsCount * 75),
+            rowsHeight,
             categoriesTable.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor, constant: -24),
             categoriesTable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             categoriesTable.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)

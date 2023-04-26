@@ -1,20 +1,20 @@
 import UIKit
 
 struct Tracker: Hashable {
-    let id: UInt
-    let title: String
-    let color: UIColor
-    let emoji: String?
-    let schedule: String?
+    var id: UInt
+    var title: String
+    var color: UIColor
+    var emoji: String?
+    var schedule: String?
 }
 
 struct TrackerCategory {
-    let title: String
-    let trackers: [Tracker]
+    var title: String
+    var trackers: [Tracker]
 }
 
 struct TrackerRecord: Hashable {
-    let id: UInt
-    let tracker: Tracker
-    let date: Date
+    var id: UInt
+    var tracker: Tracker
+    var date: Date
 }

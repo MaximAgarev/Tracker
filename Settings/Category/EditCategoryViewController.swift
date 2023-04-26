@@ -17,6 +17,7 @@ final class EditCategoryViewController: UIViewController {
     
     private lazy var categoryNameTextField: TextField = {
         let categoryNameLabel = TextField()
+        categoryNameLabel.insets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 41)
         categoryNameLabel.translatesAutoresizingMaskIntoConstraints = false
         categoryNameLabel.backgroundColor = .ypBackground
         categoryNameLabel.layer.cornerRadius = 16
@@ -82,12 +83,17 @@ final class EditCategoryViewController: UIViewController {
     func didTapAddCategoryButton(){
         let storage = TrackerStorage.shared
         var storedCategories = storage.loadCategories()
-        guard let title = categoryNameTextField.text else { return }
+        guard let title = categoryNameTextField.text,
+              title != "" else { return }
         for category in storedCategories {
             if category.title == title { return }
         }
-        let categoryToAdd: TrackerCategory = TrackerCategory(title: title, trackers: [])
-        storedCategories.append(categoryToAdd)
+        if isNew {
+            storedCategories.append(TrackerCategory(title: title, trackers: []))
+        } else {
+            guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
+            storedCategories[index].title = title
+        }
         storage.saveCategories(categories: storedCategories)
         dismiss(animated: true)
     }
@@ -96,6 +102,7 @@ final class EditCategoryViewController: UIViewController {
 extension EditCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         categoryNameTextField.resignFirstResponder()
+        didTapAddCategoryButton()
         return true
     }
 }

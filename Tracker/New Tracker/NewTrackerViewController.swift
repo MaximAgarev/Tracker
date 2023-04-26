@@ -57,20 +57,23 @@ extension NewTrackerViewController: UITableViewDataSource {
 extension NewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        indexPath.row == 0 ? presentCategoriesViewController() : presentScheduleViewController()
+        let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
+        let selected = cell?.valueLabel.text
+        indexPath.row == 0 ? presentCategoriesViewController(selected: selected ?? nil) : presentScheduleViewController(selected: selected ?? nil)
     }
     
-    func presentScheduleViewController() {
+    func presentScheduleViewController(selected: String?) {
         let scheduleViewController = ScheduleViewController()
         scheduleViewController.delegate = self
+        scheduleViewController.selectedSchedule = selected
         scheduleViewController.modalPresentationStyle = .popover
         self.present(scheduleViewController, animated: true)
     }
     
-    func presentCategoriesViewController() {
+    func presentCategoriesViewController(selected: String?) {
         let categoriesViewController = CategoriesViewController()
         categoriesViewController.delegate = self
+        categoriesViewController.selectedCategory = selected
         categoriesViewController.modalPresentationStyle = .popover
         self.present(categoriesViewController, animated: true)
     }

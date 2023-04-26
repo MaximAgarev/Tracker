@@ -21,5 +21,5 @@ final class Weekday {
         "Вс"
     ]
     
-    static let week: String = "Каждый день"
+    static let everyDay: String = "Каждый день"
 }

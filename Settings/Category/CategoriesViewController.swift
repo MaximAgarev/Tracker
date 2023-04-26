@@ -4,6 +4,7 @@ protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var storage: TrackerStorageProtocol? { get set }
     var categoriesView: CategoriesViewProtocol? { get set }
     var delegate: NewTrackerViewController? { get set }
+    var selectedCategory: String? { get set }
     
     func setView()
     func didTapAddCategoryButton()
@@ -15,6 +16,7 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     var delegate: NewTrackerViewController?
     
     var storedCategories: [TrackerCategory] = []
+    var selectedCategory: String?
     
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
@@ -43,7 +45,6 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
             self.view = CategoriesView(frame: .zero, viewController: self)
         }
         addHeaderLabel()
-        self.view.layoutIfNeeded()
     }
 
     private func addHeaderLabel() {
@@ -71,7 +72,7 @@ extension CategoriesViewController: UITableViewDataSource {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
         }
         cell.textLabel?.text = storedCategories[indexPath.row].title
-        cell.accessoryType = .none
+        cell.accessoryType = cell.textLabel?.text == selectedCategory ? .checkmark : .none
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .none
         return cell
@@ -106,10 +107,10 @@ extension CategoriesViewController: UITableViewDelegate {
                     self?.presentEditCategoryViewController(isNew: false, editTitle: title)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
-                    let categoriesView = self?.view as? CategoriesView
                     self?.storage?.deleteCategory(categoryTitle: title ?? "")
                     guard let storage = self?.storage else { return }
                     self?.storedCategories = storage.loadCategories()
+                    self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                     self?.setView()
                 }),
             ])

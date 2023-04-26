@@ -283,7 +283,6 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
 
     @objc
     func didTapCreateButton(){
-        longNameWarning.isHidden.toggle()
         viewController?.didTapCreateButton()
     }
     
@@ -296,8 +295,12 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         let indexPath: IndexPath = isCategory ? [0,0] : [0, 1]
         let cell = trackerCategoryTable.cellForRow(at: indexPath) as? CategoryCell
         
-        cell?.valueLabel.text = value
-        cell?.addValue()
+        if value != nil {
+            cell?.valueLabel.text = value
+            cell?.twoRows()
+        } else {
+            cell?.oneRow()
+        }
     }
 }
 
@@ -323,4 +326,11 @@ extension NewTrackerView: UITextFieldDelegate {
         trackerNameLabel.resignFirstResponder()
         return true
     }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        longNameWarning.isHidden = true
+        spaceForErrorLabelConstraint.constant = 24
+        return true
+    }
+    
 }
