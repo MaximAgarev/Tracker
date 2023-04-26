@@ -4,6 +4,7 @@ protocol NewTrackerViewProtocol: AnyObject {
     var viewController: NewTrackerViewControllerProtocol? { get set }
     
     func updateCategoryCell(value: String?, isCategory: Bool)
+    func createButtonAvailability(element: String, state: Bool)
 }
 
 final class NewTrackerView: UIView, NewTrackerViewProtocol {
@@ -134,8 +135,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return cancelButton
     }()
 
-    private lazy var createButton: UIButton = {
-        let createButton = UIButton()
+    private lazy var createButton: CreateTrackerButton = {
+        let createButton = CreateTrackerButton()
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         createButton.layer.cornerRadius = 16
@@ -144,6 +145,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         createButton.setTitle("Создать", for: .normal)
         createButton.setTitleColor(.ypWhite, for: .normal)
         createButton.titleLabel?.font = .systemFont(ofSize: 16)
+        createButton.isEnabled = false
         return createButton
     }()
        
@@ -280,6 +282,8 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         
         contentView.bottomAnchor.constraint(equalTo: buttonsStack.bottomAnchor).isActive = true
     }
+    
+//MARK: - Functions
 
     @objc
     func didTapCreateButton(){
@@ -293,17 +297,38 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     
     func updateCategoryCell(value: String?, isCategory: Bool){
         let indexPath: IndexPath = isCategory ? [0,0] : [0, 1]
+        let element = isCategory ? "category" : "schedule"
         let cell = trackerCategoryTable.cellForRow(at: indexPath) as? CategoryCell
         
         if value != nil {
             cell?.valueLabel.text = value
             cell?.twoRows()
+            createButtonAvailability(element: element, state: true)
         } else {
             cell?.oneRow()
+            createButtonAvailability(element: element, state: false)
+        }
+    }
+    
+    func createButtonAvailability(element: String, state: Bool) {
+        switch element {
+        case "title":
+            createButton.titleEntered = state
+        case "category":
+            createButton.categorySelected = state
+        case "schedule":
+            createButton.scheduleSelected = state
+        case "emoji":
+            createButton.emojiSelected = state
+        case "color":
+            createButton.colorSelected = state
+        default:
+            return
         }
     }
 }
 
+//MARK: - Extensions
 extension NewTrackerView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let textFieldText = textField.text,
@@ -333,4 +358,7 @@ extension NewTrackerView: UITextFieldDelegate {
         return true
     }
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        createButtonAvailability(element: "title", state: !(trackerNameLabel.text?.isEmpty ?? true))
+    }
 }

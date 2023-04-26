@@ -40,7 +40,7 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
         guard let storage = storage else { return }
         storedCategories = storage.loadCategories()
         if storedCategories.count == 0 {
-            self.view = EmptyView(frame: .zero, viewController: self)
+            self.view = EmptyCategoriesView(frame: .zero, viewController: self)
         } else {
             self.view = CategoriesView(frame: .zero, viewController: self)
         }

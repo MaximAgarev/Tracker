@@ -20,6 +20,10 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
         self.view = newTrackerView
         self.newTrackerView = newTrackerView
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
         
     func didTapCreateButton(){
         print("Create!")
@@ -56,6 +60,7 @@ extension NewTrackerViewController: UITableViewDataSource {
 
 extension NewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.view.endEditing(true)
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
         let selected = cell?.valueLabel.text
@@ -120,12 +125,15 @@ extension NewTrackerViewController: UICollectionViewDelegateFlowLayout {
 
 extension NewTrackerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.view.endEditing(true)
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
         if collectionView.tag == 1 {
             cell?.backgroundColor = .ypLightGray
+            newTrackerView?.createButtonAvailability(element: "emoji", state: true)
         } else {
             cell?.layer.borderWidth = 3
             cell?.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
+            newTrackerView?.createButtonAvailability(element: "color", state: true)
         }
     }
     

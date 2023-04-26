@@ -4,7 +4,7 @@ protocol CategoriesViewProtocol: AnyObject {
     var viewController: CategoriesViewControllerProtocol? { get set }
 }
 
-final class EmptyView: UIView, CategoriesViewProtocol {
+final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
     var viewController: CategoriesViewControllerProtocol?
     
     private lazy var emptyImage: UIImageView = {

@@ -31,6 +31,7 @@ final class CategoryCell: UITableViewCell {
     func oneRow() {
         titleLabel.removeFromSuperview()
         valueLabel.removeFromSuperview()
+        valueLabel.text = nil
         
         contentView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
