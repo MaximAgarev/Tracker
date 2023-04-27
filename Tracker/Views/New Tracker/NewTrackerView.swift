@@ -279,6 +279,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         ])
         buttonsStack.addArrangedSubview(cancelButton)
         buttonsStack.addArrangedSubview(createButton)
+        createButton.scheduleSelected = !(viewController?.isHabit ?? false)
         
         contentView.bottomAnchor.constraint(equalTo: buttonsStack.bottomAnchor).isActive = true
     }
@@ -359,6 +360,7 @@ extension NewTrackerView: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        viewController?.tracker.title = trackerNameLabel.text ?? ""
         createButtonAvailability(element: "title", state: !(trackerNameLabel.text?.isEmpty ?? true))
     }
 }

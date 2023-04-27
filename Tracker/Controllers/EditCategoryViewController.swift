@@ -22,7 +22,7 @@ final class EditCategoryViewController: UIViewController {
         categoryNameLabel.backgroundColor = .ypBackground
         categoryNameLabel.layer.cornerRadius = 16
         categoryNameLabel.layer.masksToBounds = true
-        categoryNameLabel.placeholder = "Введите название трекера"
+        categoryNameLabel.placeholder = "Введите название категории"
         categoryNameLabel.clearButtonMode = .whileEditing
         categoryNameLabel.delegate = self
         return categoryNameLabel

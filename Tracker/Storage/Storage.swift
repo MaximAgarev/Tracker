@@ -5,6 +5,7 @@ protocol TrackerStorageProtocol {
     func saveCategories(categories: [TrackerCategory])
     func deleteCategory(categoryTitle: String)
     func count() -> Int
+    func trackerID() -> Int
 }
 
 class TrackerStorage: TrackerStorageProtocol {
@@ -18,26 +19,29 @@ class TrackerStorage: TrackerStorageProtocol {
         case title
         case trackers
     }
-
+        
     func loadCategories() -> [TrackerCategory] {
         var result: [TrackerCategory] = []
         let categoriesFromStorage = storage.array(forKey: categoriesKey) as? [[String:Any]] ?? []
-        
         for category in categoriesFromStorage {
-            guard let title = category[CategoryKey.title.rawValue] as? String,
-                  let trackers = category[CategoryKey.trackers.rawValue] as? [Tracker] else { continue }
-            result.append(TrackerCategory(title: title, trackers: trackers))
+            guard let title = category[CategoryKey.title.rawValue] as? String else { continue }
+            if let trackers = category[CategoryKey.trackers.rawValue] as? Data {
+                guard let decodedTrackers = try? JSONDecoder().decode([Tracker].self, from: trackers) else { return [] }
+                result.append(TrackerCategory(title: title, trackers: decodedTrackers))
+            } else {
+                result.append(TrackerCategory(title: title, trackers: []))
+            }
         }
-        
         return result
-        }
+    }
     
     func saveCategories(categories: [TrackerCategory]) {
         var categoriesForStorage: [[String: Any]] = []
         categories.forEach { category in
             var newElementForStorage: Dictionary<String, Any> = [:]
+            let encodedtrackers = try? JSONEncoder().encode(category.trackers)
             newElementForStorage[CategoryKey.title.rawValue] = category.title
-            newElementForStorage[CategoryKey.trackers.rawValue] = category.trackers
+            newElementForStorage[CategoryKey.trackers.rawValue] = encodedtrackers
             categoriesForStorage.append(newElementForStorage)
         }
         storage.set(categoriesForStorage, forKey: categoriesKey)
@@ -45,7 +49,7 @@ class TrackerStorage: TrackerStorageProtocol {
     
     func deleteCategory(categoryTitle: String) {
         var result: [[String:Any]] = []
-        var categoriesFromStorage = storage.array(forKey: categoriesKey) as? [[String:Any]] ?? []
+        let categoriesFromStorage = storage.array(forKey: categoriesKey) as? [[String:Any]] ?? []
         for category in categoriesFromStorage {
             guard let storedCategory = category[CategoryKey.title.rawValue] as? String else { return }
             if storedCategory != categoryTitle {
@@ -61,5 +65,10 @@ class TrackerStorage: TrackerStorageProtocol {
         return categoriesFromStorage?.count ?? 0
     }
     
+    func trackerID() -> Int {
+        let trackerID = storage.integer(forKey: "trackerID") + 1
+        storage.set(trackerID, forKey: "trackerID")
+        return trackerID
+    }
     
 }

@@ -1,11 +1,11 @@
 import UIKit
 
-struct Tracker: Hashable {
-    var id: UInt
+struct Tracker: Hashable, Codable {
+    var id: Int
     var title: String
-    var color: UIColor
-    var emoji: String?
-    var schedule: String?
+    var schedule: String
+    var emoji: String
+    var color: Int
 }
 
 struct TrackerCategory {
@@ -14,7 +14,7 @@ struct TrackerCategory {
 }
 
 struct TrackerRecord: Hashable {
-    var id: UInt
+    var id: Int
     var tracker: Tracker
     var date: Date
 }

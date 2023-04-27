@@ -50,11 +50,12 @@ final class ScheduleViewController: UIViewController, ScheduleViewControllerProt
                 chosenDays.append(Weekday.shortName[index])
             }
         }
-        var schedule: String? = chosenDays.joined(separator: ", ")
-        if chosenDays.count == 7 { schedule = Weekday.everyDay }
-        if chosenDays.isEmpty { schedule = nil }
-        delegate?.newTrackerView?.updateCategoryCell(value: schedule, isCategory: false)
-        
+        var scheduleSet: String? = chosenDays.joined(separator: ", ")
+        if chosenDays.count == 7 { scheduleSet = Weekday.everyDay }
+        if chosenDays.isEmpty { scheduleSet = nil }
+        delegate?.newTrackerView?.updateCategoryCell(value: scheduleSet, isCategory: false)
+        guard let schedule = scheduleSet else { return }
+        delegate?.tracker.schedule = schedule
         dismiss(animated: true)
     }
 }

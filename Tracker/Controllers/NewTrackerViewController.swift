@@ -1,17 +1,23 @@
 import UIKit
 
 protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate {
+    var storage: TrackerStorageProtocol? { get set }
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
+    var category: TrackerCategory { get set }
+    var tracker: Tracker { get set }
+    
     func didTapCreateButton()
     func didTapCancelButton()
 }
 
 final class NewTrackerViewController: UIViewController, NewTrackerViewControllerProtocol {
+    var storage: TrackerStorageProtocol?
     var newTrackerView: NewTrackerViewProtocol?
     var isHabit: Bool = true
     
-    var category: String?
+    var category: TrackerCategory = TrackerCategory(title: "", trackers: [])
+    var tracker: Tracker = Tracker(id: 0, title: "", schedule: "", emoji: "", color: 0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +32,16 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     }
         
     func didTapCreateButton(){
-        print("Create!")
+        storage = TrackerStorage.shared
+        guard let storage = storage else { return }
+        
+        tracker.id = storage.trackerID()
+        
+        var storedCategories = storage.loadCategories()
+        guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
+        storedCategories[index].trackers.append(tracker)
+        storage.saveCategories(categories: storedCategories)
+        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     func didTapCancelButton(){
@@ -35,6 +50,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     
 }
 
+// MARK: - Category & Schedule table
 extension NewTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isHabit ? 2 : 1
@@ -84,6 +100,7 @@ extension NewTrackerViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Emoji & Color collection
 extension NewTrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         emojies.count
@@ -129,10 +146,14 @@ extension NewTrackerViewController: UICollectionViewDelegate {
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
         if collectionView.tag == 1 {
             cell?.backgroundColor = .ypLightGray
+            tracker.emoji = cell?.titleLabel.text ?? ""
             newTrackerView?.createButtonAvailability(element: "emoji", state: true)
         } else {
             cell?.layer.borderWidth = 3
             cell?.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
+            if let color = cell?.titleLabel.backgroundColor {
+                tracker.color = UIColor.ypColorSelection.firstIndex(of: color) ?? 0
+            }
             newTrackerView?.createButtonAvailability(element: "color", state: true)
         }
     }

@@ -32,7 +32,6 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
         storage = TrackerStorage.shared
         guard let storage = storage else { return }
         storedCategories = storage.loadCategories()
-        
         setView()
     }
     
@@ -86,9 +85,10 @@ extension CategoriesViewController: UITableViewDataSource {
 extension CategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
-        delegate?.newTrackerView?.updateCategoryCell(value: cell?.textLabel?.text ?? "", isCategory: true)
+        let value = cell?.textLabel?.text ?? ""
+        delegate?.newTrackerView?.updateCategoryCell(value: value, isCategory: true)
+        delegate?.category.title = value
         dismiss(animated: true)
-        cell?.accessoryType = .checkmark
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -107,11 +107,21 @@ extension CategoriesViewController: UITableViewDelegate {
                     self?.presentEditCategoryViewController(isNew: false, editTitle: title)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
-                    self?.storage?.deleteCategory(categoryTitle: title ?? "")
-                    guard let storage = self?.storage else { return }
-                    self?.storedCategories = storage.loadCategories()
-                    self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
-                    self?.setView()
+                    let alert = UIAlertController(
+                        title: nil,
+                        message: "Эта категория точно не нужна?",
+                        preferredStyle: .actionSheet)
+                    let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
+                        self?.storage?.deleteCategory(categoryTitle: title ?? "")
+                        guard let storage = self?.storage else { return }
+                        self?.storedCategories = storage.loadCategories()
+                        self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
+                        self?.setView()
+                    }
+                    let cancel = UIAlertAction(title: "Отмена", style: .cancel)
+                    alert.addAction(action)
+                    alert.addAction(cancel)
+                    self?.present(alert, animated: true)
                 }),
             ])
         })
