@@ -8,9 +8,13 @@ struct Tracker: Hashable, Codable {
     var color: Int
 }
 
-struct TrackerCategory {
+struct TrackerCategory: Equatable {
     var title: String
     var trackers: [Tracker]
+    
+    static func ==(lhs: TrackerCategory, rhs: TrackerCategory) -> Bool {
+        return lhs.title == rhs.title
+    }
 }
 
 struct TrackerRecord: Hashable {

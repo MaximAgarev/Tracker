@@ -41,6 +41,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
         guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
         storedCategories[index].trackers.append(tracker)
         storage.saveCategories(categories: storedCategories)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     

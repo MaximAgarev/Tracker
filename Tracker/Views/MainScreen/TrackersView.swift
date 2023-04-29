@@ -14,11 +14,29 @@ final class TrackersView: UIView, TrackersViewProtocol {
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
     
-    let collectionView: UICollectionView = {
+    var currentDate: Date = Date()
+    
+    private lazy var emptyImageView: UIImageView = {
+        let emptyImage = UIImage(named: "Empty Trackers Tab Image")
+        let emptyImageView = UIImageView(image: emptyImage)
+        emptyImageView.translatesAutoresizingMaskIntoConstraints = false
+        return emptyImageView
+    }()
+    
+    private lazy var emptyLabel: UILabel = {
+        let emptyLabel =  UILabel()
+        emptyLabel.text = "Что будем отслеживать?"
+        emptyLabel.font = .systemFont(ofSize: 12)
+        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+        return emptyLabel
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
         )
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(TrackersCell.self, forCellWithReuseIdentifier: "trackerCell")
         collectionView.register(TrackersHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "categoryHeader")
         return collectionView
@@ -30,6 +48,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
         self.navigationController = navigationController
         self.navigationItem = navigationItem
         
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTrackers), name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
+        
         self.setNavigationBar()
     }
     
@@ -37,6 +57,12 @@ final class TrackersView: UIView, TrackersViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func updateTrackers(){
+        collectionView.removeFromSuperview()
+        collectionView.reloadData()
+        viewController?.setView(fromStorage: true)
+       }
+        
 // MARK: - Navigation Bar
     func setNavigationBar() {
         guard let navigationController = navigationController,
@@ -60,6 +86,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         // Search bar
@@ -67,7 +94,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
         searchController.searchBar.placeholder = "Поиск"
         searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.searchTextField.clearButtonMode = .never
-        // TODO: Make delegate
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
     
@@ -76,27 +104,28 @@ final class TrackersView: UIView, TrackersViewProtocol {
         viewController?.presentNewTrackerViewController()
     }
     
+    @objc
+    func dateChanged(_ sender: UIDatePicker) {
+        currentDate = sender.date
+    }
+    
 // MARK: - Trackers Collection
     func setTrackersCollection(isEmpty: Bool) {
+        emptyLabel.removeFromSuperview()
+        emptyImageView.removeFromSuperview()
+        collectionView.removeFromSuperview()
         
         if isEmpty {
             showEmptyTab()
             return
         }
-
+        
         setCollectionView()
+        collectionView.reloadData()
     }
     
     func showEmptyTab() {
-        let emptyImage = UIImage(named: "Empty Trackers Tab Image")
-        let emptyImageView = UIImageView(image: emptyImage)
-        emptyImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(emptyImageView)
-
-        let emptyLabel =  UILabel()
-        emptyLabel.text = "Что будем отслеживать?"
-        emptyLabel.font = .systemFont(ofSize: 12)
-        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(emptyLabel)
         
         NSLayoutConstraint.activate([
@@ -108,22 +137,19 @@ final class TrackersView: UIView, TrackersViewProtocol {
     }
     
     func setCollectionView() {
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(collectionView)
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 182),
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
-        
         collectionView.dataSource = self
         collectionView.delegate = self
     }
 }
 
 extension TrackersView: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let viewController = viewController else { return 0 }
         return viewController.visibleCategories.count
@@ -175,5 +201,27 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(currentDate)
+    }
+}
+
+extension TrackersView: UISearchControllerDelegate {
+    
+}
+
+extension TrackersView: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            viewController?.setView(fromStorage: true)
+        } else {
+            viewController?.searchTrackers(text: searchText)
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewController?.setView(fromStorage: true)
     }
 }

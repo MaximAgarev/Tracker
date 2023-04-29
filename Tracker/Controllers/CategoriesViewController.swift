@@ -117,6 +117,7 @@ extension CategoriesViewController: UITableViewDelegate {
                         self?.storedCategories = storage.loadCategories()
                         self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                         self?.setView()
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
                     }
                     let cancel = UIAlertAction(title: "Отмена", style: .cancel)
                     alert.addAction(action)
