@@ -4,9 +4,10 @@ protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var storage: TrackerStorageProtocol? { get set }
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
-    var category: TrackerCategory { get set }
-    var tracker: Tracker { get set }
     
+    var category: TrackerCategory { get set }
+    var trackerParams: TrackerParams { get set }
+        
     func didTapCreateButton()
     func didTapCancelButton()
 }
@@ -17,7 +18,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     var isHabit: Bool = true
     
     var category: TrackerCategory = TrackerCategory(title: "", trackers: [])
-    var tracker: Tracker = Tracker(id: 0, title: "", schedule: "", emoji: "", color: 0)
+    var trackerParams: TrackerParams = TrackerParams(id: 0, title: "", schedule: "", emoji: "", color: 0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,13 +35,19 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     func didTapCreateButton(){
         storage = TrackerStorage.shared
         guard let storage = storage else { return }
-        
-        tracker.id = storage.trackerID()
-        
         var storedCategories = storage.loadCategories()
+        
+        let tracker = Tracker(
+            id: storage.trackerID(),
+            title: trackerParams.title,
+            schedule: trackerParams.schedule,
+            emoji: trackerParams.emoji,
+            color: trackerParams.color
+        )
         guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
         storedCategories[index].trackers.append(tracker)
         storage.saveCategories(categories: storedCategories)
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
@@ -147,13 +154,13 @@ extension NewTrackerViewController: UICollectionViewDelegate {
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
         if collectionView.tag == 1 {
             cell?.backgroundColor = .ypLightGray
-            tracker.emoji = cell?.titleLabel.text ?? ""
+            trackerParams.emoji = cell?.titleLabel.text ?? ""
             newTrackerView?.createButtonAvailability(element: "emoji", state: true)
         } else {
             cell?.layer.borderWidth = 3
             cell?.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
             if let color = cell?.titleLabel.backgroundColor {
-                tracker.color = UIColor.ypColorSelection.firstIndex(of: color) ?? 0
+                trackerParams.color = UIColor.ypColorSelection.firstIndex(of: color) ?? 0
             }
             newTrackerView?.createButtonAvailability(element: "color", state: true)
         }

@@ -139,6 +139,7 @@
 			children = (
 				D089E5D129DA26E3005F9FAF /* TabBarController.swift */,
 				D0F9C41829DA11E6009C7686 /* TrackersViewController.swift */,
+				D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */,
 				D0F1B6F429E04FE200471968 /* NewTrackerViewController.swift */,
 				D0EEE2E829EDBF260021576D /* CategoriesViewController.swift */,
 				D0CACCCB29F5509600BD9D91 /* EditCategoryViewController.swift */,
@@ -196,7 +197,6 @@
 		D0F1B6F229E04F1D00471968 /* Type */ = {
 			isa = PBXGroup;
 			children = (
-				D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */,
 				D089E5F629DF6DC0005F9FAF /* ChoiceView.swift */,
 			);
 			path = Type;

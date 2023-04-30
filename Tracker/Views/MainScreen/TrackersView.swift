@@ -4,7 +4,7 @@ protocol TrackersViewProtocol: AnyObject {
     var viewController: TrackersViewControllerProtocol? { get set }
     
     func setNavigationBar()
-    func setTrackersCollection(isEmpty: Bool)
+    func setTrackersCollection()
 }
 
 
@@ -13,8 +13,6 @@ final class TrackersView: UIView, TrackersViewProtocol {
     weak var viewController: TrackersViewControllerProtocol?
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
-    
-    var currentDate: Date = Date()
     
     private lazy var emptyImageView: UIImageView = {
         let emptyImage = UIImage(named: "Empty Trackers Tab Image")
@@ -48,20 +46,12 @@ final class TrackersView: UIView, TrackersViewProtocol {
         self.navigationController = navigationController
         self.navigationItem = navigationItem
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateTrackers), name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
-        
         self.setNavigationBar()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    @objc func updateTrackers(){
-        collectionView.removeFromSuperview()
-        collectionView.reloadData()
-        viewController?.setView(fromStorage: true)
-       }
         
 // MARK: - Navigation Bar
     func setNavigationBar() {
@@ -86,6 +76,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        datePicker.calendar.firstWeekday = 2
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
@@ -94,7 +85,6 @@ final class TrackersView: UIView, TrackersViewProtocol {
         searchController.searchBar.placeholder = "Поиск"
         searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.searchTextField.clearButtonMode = .never
-        searchController.delegate = self
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
@@ -106,22 +96,27 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func dateChanged(_ sender: UIDatePicker) {
-        currentDate = sender.date
+        viewController?.currentDate = sender.date
+        viewController?.setView()
     }
     
 // MARK: - Trackers Collection
-    func setTrackersCollection(isEmpty: Bool) {
+    
+    @objc
+    func setTrackersCollection() {
         emptyLabel.removeFromSuperview()
         emptyImageView.removeFromSuperview()
         collectionView.removeFromSuperview()
+        
+        guard let isEmpty = viewController?.visibleCategories.isEmpty else { return }
         
         if isEmpty {
             showEmptyTab()
             return
         }
         
-        setCollectionView()
         collectionView.reloadData()
+        setCollectionView()
     }
     
     func showEmptyTab() {
@@ -165,8 +160,11 @@ extension TrackersView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
         let tracker = viewController?.visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
-        cell.titleLabel.text = tracker?.title
+        #warning("remove schedule")
+//        cell.titleLabel.text = tracker?.title
+        cell.titleLabel.text = "Sch:" + (tracker?.schedule ?? "")
         cell.emodjiLabel.text = tracker?.emoji
+        cell.daysCountLabel.text = "1 день"
         cell.trackButton.isChecked = false
         cell.trackButton.tintColor = UIColor.ypColorSelection[tracker?.color ?? 0]
         return cell
@@ -204,24 +202,20 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(currentDate)
+//        print(Weekday.converted[Calendar.current.component(.weekday, from: currentDate)])
     }
-}
-
-extension TrackersView: UISearchControllerDelegate {
-    
 }
 
 extension TrackersView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
-            viewController?.setView(fromStorage: true)
+            viewController?.setView()
         } else {
             viewController?.searchTrackers(text: searchText)
         }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewController?.setView(fromStorage: true)
+        viewController?.setView()
     }
 }

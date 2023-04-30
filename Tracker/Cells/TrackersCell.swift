@@ -6,6 +6,7 @@ final class TrackersCell: UICollectionViewCell {
     let emodjiLabel: UILabel = UILabel()
     let titleLabel: UILabel = UILabel()
     let trackButton: TrackButton = TrackButton()
+    let daysCountLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -14,6 +15,7 @@ final class TrackersCell: UICollectionViewCell {
         setTitle()
         setEmoji()
         setTrackButton()
+        setDaysCountLabel()
     }
     
     required init?(coder: NSCoder) {
@@ -71,6 +73,18 @@ final class TrackersCell: UICollectionViewCell {
             trackButton.trailingAnchor.constraint(equalTo: colorCard.trailingAnchor, constant: -12),
             trackButton.heightAnchor.constraint(equalToConstant: 34),
             trackButton.widthAnchor.constraint(equalToConstant: 34)
+        ])
+    }
+    
+    func setDaysCountLabel() {
+        addSubview(daysCountLabel)
+        daysCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        daysCountLabel.font = .systemFont(ofSize: 12)
+        daysCountLabel.textAlignment = .left
+        daysCountLabel.textColor = .ypBlack
+        NSLayoutConstraint.activate([
+            daysCountLabel.centerYAnchor.constraint(equalTo: trackButton.centerYAnchor),
+            daysCountLabel.leadingAnchor.constraint(equalTo: colorCard.leadingAnchor, constant: 12)
         ])
     }
 }

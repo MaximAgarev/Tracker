@@ -55,7 +55,7 @@ final class ScheduleViewController: UIViewController, ScheduleViewControllerProt
         if chosenDays.isEmpty { scheduleSet = nil }
         delegate?.newTrackerView?.updateCategoryCell(value: scheduleSet, isCategory: false)
         guard let schedule = scheduleSet else { return }
-        delegate?.tracker.schedule = schedule
+        delegate?.trackerParams.schedule = schedule
         dismiss(animated: true)
     }
 }

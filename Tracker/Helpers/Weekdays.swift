@@ -22,4 +22,15 @@ final class Weekday {
     ]
     
     static let everyDay: String = "Каждый день"
+    
+    static let converted: [String] = [
+    "",
+    "Вс",
+    "Пн",
+    "Вт",
+    "Ср",
+    "Чт",
+    "Пт",
+    "Сб"
+    ]
 }

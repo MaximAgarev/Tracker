@@ -4,9 +4,10 @@ protocol TrackersViewControllerProtocol: AnyObject {
     var trackersView: TrackersViewProtocol? { get set }
     
     var categories: [TrackerCategory] { get set }
+    var currentDate: Date { get set }
     var visibleCategories: [TrackerCategory] { get set }
     
-    func setView(fromStorage: Bool)
+    func setView()
     func searchTrackers(text: String)
     func presentNewTrackerViewController()
 }
@@ -16,6 +17,7 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     var trackersView: TrackersViewProtocol?
     
     var categories: [TrackerCategory] = []
+    var currentDate: Date = Date()
     var visibleCategories: [TrackerCategory] = []
     var completedTrackers: Set<TrackerRecord> = []
 
@@ -31,22 +33,44 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
         trackersView.viewController = self
         self.trackersView = trackersView
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setView),
+            name: NSNotification.Name(rawValue: "updateTrackers"),
+            object: nil
+        )
         
-        setView(fromStorage: true)
+        setView()
     }
     
-    func setView(fromStorage: Bool) {
-        if fromStorage {
-            self.view = trackersView as? UIView
-            let storage = TrackerStorage.shared
-            categories = storage.loadCategories()
-            visibleCategories = []
-            categories.forEach {
-                if $0.trackers.count != 0 { visibleCategories.append($0) }
-            }
-        }
-        trackersView?.setTrackersCollection(isEmpty: visibleCategories.isEmpty)
+    @objc
+    func setView() {
+        self.view = trackersView as? UIView
+        let storage = TrackerStorage.shared
+        categories = storage.loadCategories()
+        
+        visibleCategories = filterByWeekday(categories: categories)
+        trackersView?.setTrackersCollection()
     }
+    
+    func filterByWeekday(categories: [TrackerCategory]) -> [TrackerCategory] {
+        var filteredCategories: [TrackerCategory] = []
+        categories.forEach { category in
+            var categoryInFilter = TrackerCategory(title: category.title, trackers: [])
+            category.trackers.forEach { tracker in
+                if tracker.schedule == "" {
+                    categoryInFilter.trackers.append(tracker)
+                } else {
+                    let currentWeekday = Weekday.converted[Calendar.current.component(.weekday, from: currentDate)]
+                    if tracker.schedule.range(of: currentWeekday) != nil {
+                        categoryInFilter.trackers.append(tracker)
+                    }
+                }
+            }
+            if !categoryInFilter.trackers.isEmpty { filteredCategories.append(categoryInFilter) }
+            }
+        return filteredCategories
+        }
     
     func searchTrackers(text: String) {
         visibleCategories = []
@@ -61,7 +85,8 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
                 if !categoryInSearch.trackers.isEmpty { visibleCategories.append(categoryInSearch) }
             }
         }
-        trackersView?.setTrackersCollection(isEmpty: visibleCategories.isEmpty)
+        visibleCategories = filterByWeekday(categories: visibleCategories)
+        trackersView?.setTrackersCollection()
     }
         
     func presentNewTrackerViewController() {

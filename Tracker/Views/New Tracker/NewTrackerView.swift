@@ -360,7 +360,7 @@ extension NewTrackerView: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        viewController?.tracker.title = trackerNameLabel.text ?? ""
+        viewController?.trackerParams.title = trackerNameLabel.text ?? ""
         createButtonAvailability(element: "title", state: !(trackerNameLabel.text?.isEmpty ?? true))
     }
 }
