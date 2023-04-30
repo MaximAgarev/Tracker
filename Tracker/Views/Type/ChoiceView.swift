@@ -7,6 +7,7 @@ protocol ChoiceViewProtocol: AnyObject {
 final class ChoiceView: UIView, ChoiceViewProtocol {
     weak var viewController: ChoiceViewControllerProtocol?
     
+// MARK: - Create elements
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
         headerLabel.text = "Создание трекера"
@@ -37,23 +38,25 @@ final class ChoiceView: UIView, ChoiceViewProtocol {
         eventButton.titleLabel?.font = .systemFont(ofSize: 16)
         return eventButton
     }()
-        
+    
+// MARK: -
     init(frame: CGRect, viewController: ChoiceViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
         
         self.backgroundColor = .ypWhite
         
-        setHeader()
-        setHabitButton()
-        setEventButton()
+        addHeader()
+        addHabitButton()
+        addEventButton()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setHeader() {
+//MARK: - Add elements
+    func addHeader() {
         addSubview(headerLabel)
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -62,7 +65,7 @@ final class ChoiceView: UIView, ChoiceViewProtocol {
         ])
     }
     
-    func setHabitButton() {
+    func addHabitButton() {
         habitButton.addTarget(self, action: #selector(didTapHabitButton), for: .touchUpInside)
         addSubview(habitButton)
         habitButton.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +77,7 @@ final class ChoiceView: UIView, ChoiceViewProtocol {
             ])
     }
     
-    func setEventButton() {
+    func addEventButton() {
         eventButton.addTarget(self, action: #selector(didTapEventButton), for: .touchUpInside)
         addSubview(eventButton)
         eventButton.translatesAutoresizingMaskIntoConstraints = false
@@ -86,6 +89,7 @@ final class ChoiceView: UIView, ChoiceViewProtocol {
             ])
     }
     
+//MARK: - Functions
     @objc
     func didTapHabitButton(){
         viewController?.presentNewTrackerViewController(isHabit: true)

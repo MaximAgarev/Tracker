@@ -21,6 +21,8 @@
 		D089E5F329DF6AB8005F9FAF /* ChoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */; };
 		D089E5F729DF6DC0005F9FAF /* ChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5F629DF6DC0005F9FAF /* ChoiceView.swift */; };
 		D0ACD29229F94876000FB7F3 /* CreateTrackerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0ACD29129F94876000FB7F3 /* CreateTrackerButton.swift */; };
+		D0ACD29629FEC40F000FB7F3 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0ACD29529FEC40F000FB7F3 /* Date+Extensions.swift */; };
+		D0ACD29829FEF63B000FB7F3 /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0ACD29729FEF63B000FB7F3 /* Int+Extensions.swift */; };
 		D0CACCC229F2E4A300BD9D91 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC129F2E4A300BD9D91 /* CategoryCell.swift */; };
 		D0CACCC629F4211400BD9D91 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */; };
 		D0CACCC829F4214100BD9D91 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CACCC729F4214100BD9D91 /* ScheduleView.swift */; };
@@ -54,6 +56,8 @@
 		D089E5F229DF6AB8005F9FAF /* ChoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceViewController.swift; sourceTree = "<group>"; };
 		D089E5F629DF6DC0005F9FAF /* ChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceView.swift; sourceTree = "<group>"; };
 		D0ACD29129F94876000FB7F3 /* CreateTrackerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerButton.swift; sourceTree = "<group>"; };
+		D0ACD29529FEC40F000FB7F3 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		D0ACD29729FEF63B000FB7F3 /* Int+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
 		D0CACCC129F2E4A300BD9D91 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		D0CACCC729F4214100BD9D91 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
@@ -92,6 +96,8 @@
 				D0CACCC929F5451E00BD9D91 /* Weekdays.swift */,
 				D089E5D429DA2BC7005F9FAF /* UIColor+Extensions.swift */,
 				D0F1B6FA29E3155B00471968 /* UITextField+Extension.swift */,
+				D0ACD29529FEC40F000FB7F3 /* Date+Extensions.swift */,
+				D0ACD29729FEF63B000FB7F3 /* Int+Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -322,6 +328,7 @@
 				D089E5D229DA26E3005F9FAF /* TabBarController.swift in Sources */,
 				D089E5DB29DC4AE0005F9FAF /* TrackersView.swift in Sources */,
 				D0F9C41929DA11E6009C7686 /* TrackersViewController.swift in Sources */,
+				D0ACD29829FEF63B000FB7F3 /* Int+Extensions.swift in Sources */,
 				D0CACCC829F4214100BD9D91 /* ScheduleView.swift in Sources */,
 				D02E3CB729F1A05000DFE26B /* CategoriesView.swift in Sources */,
 				D0F1B6F529E04FE200471968 /* NewTrackerViewController.swift in Sources */,
@@ -337,6 +344,7 @@
 				D0EEE2E929EDBF260021576D /* CategoriesViewController.swift in Sources */,
 				D089E5EF29DEDC88005F9FAF /* TrackersHeader.swift in Sources */,
 				D0F1B6F729E04FF500471968 /* NewTrackerView.swift in Sources */,
+				D0ACD29629FEC40F000FB7F3 /* Date+Extensions.swift in Sources */,
 				D089E5D029DA267A005F9FAF /* StatisticsViewController.swift in Sources */,
 				D0FF0D5329E4898200837748 /* CollectionCell.swift in Sources */,
 				D02E3CB529F16CC300DFE26B /* EmptyCategoriesView.swift in Sources */,

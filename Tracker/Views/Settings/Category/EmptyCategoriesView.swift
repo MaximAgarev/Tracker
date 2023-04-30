@@ -7,6 +7,7 @@ protocol CategoriesViewProtocol: AnyObject {
 final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
     var viewController: CategoriesViewControllerProtocol?
     
+// MARK: - Create elements
     private lazy var emptyImage: UIImageView = {
         let emptyImage = UIImage(named: "Empty Trackers Tab Image")
         let emptyImageView = UIImageView(image: emptyImage)
@@ -35,6 +36,7 @@ final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
         return addCategoryButton
     }()
     
+    // MARK: -
     init(frame: CGRect, viewController: CategoriesViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
@@ -49,6 +51,7 @@ final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+//MARK: - Add elements
     func addSubviews() {
         addSubview(emptyImage)
         NSLayoutConstraint.activate([
@@ -71,6 +74,7 @@ final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
             ])
     }
     
+//MARK: - Functions
     @objc
     func didTapAddCategoryButton(){
         viewController?.didTapAddCategoryButton()

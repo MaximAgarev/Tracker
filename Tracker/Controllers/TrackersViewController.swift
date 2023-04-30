@@ -2,22 +2,26 @@ import UIKit
 
 protocol TrackersViewControllerProtocol: AnyObject {
     var trackersView: TrackersViewProtocol? { get set }
+    var storage: TrackerStorageProtocol? { get set }
     
     var categories: [TrackerCategory] { get set }
     var currentDate: Date { get set }
     var visibleCategories: [TrackerCategory] { get set }
+    var completedTrackers: Set<TrackerRecord> { get set }
     
     func setView()
     func searchTrackers(text: String)
+    func trackButtonDidTap(trackerID: Int)
     func presentNewTrackerViewController()
 }
 
 class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     
     var trackersView: TrackersViewProtocol?
+    var storage: TrackerStorageProtocol?
     
     var categories: [TrackerCategory] = []
-    var currentDate: Date = Date()
+    var currentDate: Date = Date().withoutTime()
     var visibleCategories: [TrackerCategory] = []
     var completedTrackers: Set<TrackerRecord> = []
 
@@ -32,6 +36,7 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
                 )
         trackersView.viewController = self
         self.trackersView = trackersView
+        storage = TrackerStorage.shared
         
         NotificationCenter.default.addObserver(
             self,
@@ -46,8 +51,10 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     @objc
     func setView() {
         self.view = trackersView as? UIView
-        let storage = TrackerStorage.shared
+        
+        guard let storage = storage else { return }
         categories = storage.loadCategories()
+        completedTrackers = storage.loadCompletedTrackers()
         
         visibleCategories = filterByWeekday(categories: categories)
         trackersView?.setTrackersCollection()
@@ -87,6 +94,18 @@ class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
         }
         visibleCategories = filterByWeekday(categories: visibleCategories)
         trackersView?.setTrackersCollection()
+    }
+    
+    func trackButtonDidTap(trackerID: Int) {
+        let trackerRecord = TrackerRecord(id: trackerID, date: currentDate.withoutTime())
+        if completedTrackers.contains(trackerRecord) {
+            completedTrackers.remove(trackerRecord)
+        } else {
+            completedTrackers.insert(trackerRecord)
+        }
+        guard let storage = storage else { return }
+        storage.saveCompletedTrackers(completedTrackers: completedTrackers)
+        setView()
     }
         
     func presentNewTrackerViewController() {

@@ -8,15 +8,6 @@ struct Tracker: Hashable, Codable {
     let color: Int
 }
 
-struct TrackerParams {
-    var id: Int
-    var title: String
-    var schedule: String
-    var emoji: String
-    var color: Int
-    
-}
-
 struct TrackerCategory: Equatable {
     var title: String
     var trackers: [Tracker]
@@ -28,7 +19,16 @@ struct TrackerCategory: Equatable {
 
 struct TrackerRecord: Hashable {
     var id: Int
-    var tracker: Tracker
     var date: Date
 }
 
+// MARK: -
+
+struct TrackerParams {
+    var id: Int
+    var title: String
+    var schedule: String
+    var emoji: String
+    var color: Int
+    
+}

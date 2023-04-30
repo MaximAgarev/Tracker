@@ -4,6 +4,8 @@ protocol TrackerStorageProtocol {
     func loadCategories() -> [TrackerCategory]
     func saveCategories(categories: [TrackerCategory])
     func deleteCategory(categoryTitle: String)
+    func loadCompletedTrackers() -> Set<TrackerRecord>
+    func saveCompletedTrackers(completedTrackers: Set<TrackerRecord>)
     func count() -> Int
     func trackerID() -> Int
 }
@@ -14,10 +16,16 @@ class TrackerStorage: TrackerStorageProtocol {
     
     private var storage = UserDefaults.standard
     private var categoriesKey = "categories"
+    private var recordsKey = "records"
     
     private enum CategoryKey: String {
         case title
         case trackers
+    }
+    
+    private enum RecordKey: String {
+        case id
+        case date
     }
         
     func loadCategories() -> [TrackerCategory] {
@@ -60,6 +68,28 @@ class TrackerStorage: TrackerStorageProtocol {
         storage.set(result, forKey: categoriesKey)
     }
     
+    func loadCompletedTrackers() -> Set<TrackerRecord> {
+        var result: Set<TrackerRecord> = []
+        let recordsFromStorage = storage.array(forKey: recordsKey) as? [[String:Any]] ?? []
+        for record in recordsFromStorage {
+            guard let id = record[RecordKey.id.rawValue] as? Int else { continue }
+            guard let date = record[RecordKey.date.rawValue] as? Date else { continue }
+            result.insert(TrackerRecord(id: id, date: date))
+        }
+        return result
+    }
+    
+    func saveCompletedTrackers(completedTrackers: Set<TrackerRecord>) {
+        var recordsForStorage: [[String: Any]] = []
+        completedTrackers.forEach { record in
+            var newElementForStorage: Dictionary<String, Any> = [:]
+            newElementForStorage[RecordKey.id.rawValue] = record.id
+            newElementForStorage[RecordKey.date.rawValue] = record.date
+            recordsForStorage.insert(newElementForStorage, at: recordsForStorage.count)
+        }
+        storage.set(recordsForStorage, forKey: recordsKey)
+    }
+    
     func count() -> Int {
         let categoriesFromStorage = storage.array(forKey: categoriesKey)
         return categoriesFromStorage?.count ?? 0
@@ -70,5 +100,4 @@ class TrackerStorage: TrackerStorageProtocol {
         storage.set(trackerID, forKey: "trackerID")
         return trackerID
     }
-    
 }

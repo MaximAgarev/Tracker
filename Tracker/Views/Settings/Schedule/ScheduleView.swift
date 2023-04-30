@@ -7,6 +7,7 @@ protocol ScheduleViewProtocol: AnyObject {
 final class ScheduleView: UIView, ScheduleViewProtocol {
     var viewController: ScheduleViewControllerProtocol?
     
+// MARK: - Create elements
     private lazy var scheduleTable: UITableView = {
         let scheduleTable = UITableView()
         scheduleTable.translatesAutoresizingMaskIntoConstraints = false
@@ -34,6 +35,7 @@ final class ScheduleView: UIView, ScheduleViewProtocol {
         return addScheduleButton
     }()
     
+// MARK: -
     init(frame: CGRect, viewController: ScheduleViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
@@ -48,8 +50,8 @@ final class ScheduleView: UIView, ScheduleViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+//MARK: - Add elements
     func addSubviews() {
-        
         addSubview(addScheduleButton)
         NSLayoutConstraint.activate([
             addScheduleButton.heightAnchor.constraint(equalToConstant: 60),
@@ -65,10 +67,9 @@ final class ScheduleView: UIView, ScheduleViewProtocol {
             scheduleTable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             scheduleTable.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
-        
-        
     }
     
+//MARK: - Functions
     @objc
     func didTapAddScheduleButton(){
         viewController?.didTapAddScheduleButton()

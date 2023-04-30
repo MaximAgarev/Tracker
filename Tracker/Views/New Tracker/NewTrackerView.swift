@@ -285,7 +285,6 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
     }
     
 //MARK: - Functions
-
     @objc
     func didTapCreateButton(){
         viewController?.didTapCreateButton()

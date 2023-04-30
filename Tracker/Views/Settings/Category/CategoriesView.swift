@@ -3,6 +3,7 @@ import UIKit
 final class CategoriesView: UIView, CategoriesViewProtocol {
     var viewController: CategoriesViewControllerProtocol?
     
+// MARK: - Create elements
     private lazy var categoriesTable: UITableView = {
         let categoriesTable = UITableView()
         categoriesTable.translatesAutoresizingMaskIntoConstraints = false
@@ -29,6 +30,7 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         return addCategoryButton
     }()
     
+// MARK: -
     init(frame: CGRect, viewController: CategoriesViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController
@@ -42,6 +44,7 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+//MARK: - Add elements
     func addSubviews() {
         addSubview(addCategoryButton)
         NSLayoutConstraint.activate([
@@ -65,6 +68,7 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         ])
     }
     
+//MARK: - Functions
     @objc
     func didTapAddCategoryButton(){
         viewController?.didTapAddCategoryButton()

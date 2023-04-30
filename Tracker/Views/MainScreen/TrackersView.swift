@@ -14,6 +14,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
     
+// MARK: - Create elements
     private lazy var emptyImageView: UIImageView = {
         let emptyImage = UIImage(named: "Empty Trackers Tab Image")
         let emptyImageView = UIImageView(image: emptyImage)
@@ -40,6 +41,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         return collectionView
     }()
     
+// MARK: -
     init(frame: CGRect, viewController: TrackersViewControllerProtocol, navigationController: UINavigationController, navigationItem: UINavigationItem) {
         super.init(frame: frame)
         self.backgroundColor = .ypWhite
@@ -53,7 +55,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
         
-// MARK: - Navigation Bar
+// MARK: - Add Navigation Bar
     func setNavigationBar() {
         guard let navigationController = navigationController,
               let navigationItem = navigationItem
@@ -76,6 +78,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        datePicker.locale = Locale(identifier: "ru_RU")
         datePicker.calendar.firstWeekday = 2
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
@@ -96,12 +99,11 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func dateChanged(_ sender: UIDatePicker) {
-        viewController?.currentDate = sender.date
+        viewController?.currentDate = sender.date.withoutTime()
         viewController?.setView()
     }
     
-// MARK: - Trackers Collection
-    
+// MARK: - Add Trackers Collection
     @objc
     func setTrackersCollection() {
         emptyLabel.removeFromSuperview()
@@ -144,6 +146,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
     }
 }
 
+//MARK: - Extensions
 extension TrackersView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let viewController = viewController else { return 0 }
@@ -159,15 +162,41 @@ extension TrackersView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
         let tracker = viewController?.visibleCategories[indexPath.section].trackers[indexPath.row]
+        let trackerID = tracker?.id ?? 0
+        
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
-        #warning("remove schedule")
-//        cell.titleLabel.text = tracker?.title
-        cell.titleLabel.text = "Sch:" + (tracker?.schedule ?? "")
+        cell.titleLabel.text = tracker?.title
         cell.emodjiLabel.text = tracker?.emoji
-        cell.daysCountLabel.text = "1 день"
-        cell.trackButton.isChecked = false
+        cell.daysCountLabel.text = daysCompleted(trackerID: trackerID).days()
+        cell.trackButton.tag = trackerID
+        cell.trackButton.isChecked = buttonIsChecked(trackerID: trackerID)
+        cell.trackButton.addTarget(self, action: #selector(trackButtonDidTap(sender:)), for: .touchUpInside)
         cell.trackButton.tintColor = UIColor.ypColorSelection[tracker?.color ?? 0]
         return cell
+    }
+    
+    func buttonIsChecked(trackerID: Int) -> Bool {
+        let trackerID = trackerID
+        guard let currentDate = viewController?.currentDate else { return false }
+        let record = TrackerRecord(id: trackerID, date: currentDate)
+        guard let recordExists = viewController?.completedTrackers.contains(record) else { return false }
+        return recordExists
+    }
+    
+    func daysCompleted(trackerID: Int) -> Int {
+        let daysCompleted = viewController?.completedTrackers.filter { $0.id == trackerID }
+        return daysCompleted?.count ?? 0
+    }
+    
+    @objc
+    func trackButtonDidTap(sender: Any) {
+        guard let currentDate = viewController?.currentDate.withoutTime() else { return }
+        if  currentDate > Date().withoutTime() { return }
+        
+        let buttonTapped = sender as! TrackButton
+        let trackerID = buttonTapped.tag
+        buttonTapped.isChecked.toggle()
+        viewController?.trackButtonDidTap(trackerID: trackerID)
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -202,7 +231,7 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print(Weekday.converted[Calendar.current.component(.weekday, from: currentDate)])
+
     }
 }
 

@@ -13,8 +13,6 @@ final class TrackButton: UIButton {
         
         self.layer.cornerRadius = 17
         self.layer.masksToBounds = true
-        
-        self.addTarget(self, action: #selector(didTap), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -24,10 +22,5 @@ final class TrackButton: UIButton {
     func setImage(imageName: String) {
         let image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
         self.setImage(image, for: .normal)
-    }
-    
-    @objc
-    func didTap(){
-        self.isChecked.toggle()
     }
 }

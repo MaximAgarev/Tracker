@@ -85,6 +85,7 @@ extension ScheduleViewController: UITableViewDataSource {
         let choiceSwitch = UISwitch()
         cell.contentView.addSubview(choiceSwitch)
         choiceSwitch.translatesAutoresizingMaskIntoConstraints = false
+        choiceSwitch.onTintColor = .ypBlue
         
         choiceSwitch.accessibilityIdentifier = String(identifier)
         choiceSwitch.isOn = isOn
