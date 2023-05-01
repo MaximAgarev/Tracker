@@ -22,7 +22,7 @@ final class TrackersCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setColorCard() {
+    private func setColorCard() {
         colorCard.layer.cornerRadius = 16
         colorCard.layer.masksToBounds = true
         contentView.addSubview(colorCard)
@@ -35,7 +35,7 @@ final class TrackersCell: UICollectionViewCell {
             ])
     }
     
-    func setTitle() {
+    private func setTitle() {
         titleLabel.sizeToFit()
         titleLabel.numberOfLines = 2
         titleLabel.font = .systemFont(ofSize: 12)
@@ -49,7 +49,7 @@ final class TrackersCell: UICollectionViewCell {
         ])
     }
     
-    func setEmoji() {
+    private func setEmoji() {
         emodjiLabel.backgroundColor = .white.withAlphaComponent(0.3)
         emodjiLabel.font = .systemFont(ofSize: 12)
         emodjiLabel.textAlignment = .center
@@ -65,7 +65,7 @@ final class TrackersCell: UICollectionViewCell {
             ])
     }
     
-    func setTrackButton() {
+    private func setTrackButton() {
         addSubview(trackButton)
         trackButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -76,7 +76,7 @@ final class TrackersCell: UICollectionViewCell {
         ])
     }
     
-    func setDaysCountLabel() {
+    private func setDaysCountLabel() {
         addSubview(daysCountLabel)
         daysCountLabel.translatesAutoresizingMaskIntoConstraints = false
         daysCountLabel.font = .systemFont(ofSize: 12)

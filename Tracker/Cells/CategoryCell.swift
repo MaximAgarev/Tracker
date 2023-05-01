@@ -21,14 +21,14 @@ final class CategoryCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
             
-        oneRow()
+        configureTableForOneRow()
 }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func oneRow() {
+    func configureTableForOneRow() {
         titleLabel.removeFromSuperview()
         valueLabel.removeFromSuperview()
         valueLabel.text = nil
@@ -42,7 +42,7 @@ final class CategoryCell: UITableViewCell {
         ])
     }
     
-    func twoRows() {
+    func configureTableForTwoRows() {
         titleLabel.removeFromSuperview()
         
         contentView.addSubview(titleLabel)

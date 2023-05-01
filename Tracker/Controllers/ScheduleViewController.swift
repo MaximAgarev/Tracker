@@ -34,7 +34,7 @@ final class ScheduleViewController: UIViewController, ScheduleViewControllerProt
         addHeaderLabel()
     }
     
-    func addHeaderLabel() {
+    private func addHeaderLabel() {
         view.addSubview(headerLabel)
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -81,7 +81,7 @@ extension ScheduleViewController: UITableViewDataSource {
         return 75
     }
     
-    func addSwitch(cell: CategoryCell, identifier: Int, isOn: Bool) {
+    private func addSwitch(cell: CategoryCell, identifier: Int, isOn: Bool) {
         let choiceSwitch = UISwitch()
         cell.contentView.addSubview(choiceSwitch)
         choiceSwitch.translatesAutoresizingMaskIntoConstraints = false
@@ -100,7 +100,7 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     @objc
-    func switchValueDidChange(_ sender: UISwitch) {
+    private func switchValueDidChange(_ sender: UISwitch) {
         guard let index = sender.accessibilityIdentifier,
               let index = Int(index) else { return }
         choiceSwitches[index].isOn = sender.isOn

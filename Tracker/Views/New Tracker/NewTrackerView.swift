@@ -302,10 +302,10 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         
         if value != nil {
             cell?.valueLabel.text = value
-            cell?.twoRows()
+            cell?.configureTableForTwoRows()
             createButtonAvailability(element: element, state: true)
         } else {
-            cell?.oneRow()
+            cell?.configureTableForOneRow()
             createButtonAvailability(element: element, state: false)
         }
     }

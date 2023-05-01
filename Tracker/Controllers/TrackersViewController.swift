@@ -15,7 +15,7 @@ protocol TrackersViewControllerProtocol: AnyObject {
     func presentNewTrackerViewController()
 }
 
-class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
+final class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
     
     var trackersView: TrackersViewProtocol?
     var storage: TrackerStorageProtocol?

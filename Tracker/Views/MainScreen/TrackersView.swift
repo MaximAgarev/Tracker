@@ -16,8 +16,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
 // MARK: - Create elements
     private lazy var emptyImageView: UIImageView = {
-        let emptyImage = UIImage(named: "Empty Trackers Tab Image")
-        let emptyImageView = UIImageView(image: emptyImage)
+        var emptyImage = UIImage(named: "Empty Trackers Tab Image")
+        var emptyImageView = UIImageView(image: emptyImage)
         emptyImageView.translatesAutoresizingMaskIntoConstraints = false
         return emptyImageView
     }()
@@ -122,6 +122,11 @@ final class TrackersView: UIView, TrackersViewProtocol {
     }
     
     func showEmptyTab() {
+        if navigationItem?.searchController?.searchBar.text != "" {
+            emptyImageView.image = UIImage(named: "Empty Search Image")
+            emptyLabel.text = "Ничего не найдено"
+        }
+        
         addSubview(emptyImageView)
         addSubview(emptyLabel)
         
