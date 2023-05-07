@@ -29,9 +29,8 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        storage = TrackerStorage.shared
-        guard let storage = storage else { return }
-        storedCategories = storage.loadCategories()
+        storage = TrackerStorageCoreData.shared
+
         setView()
     }
     

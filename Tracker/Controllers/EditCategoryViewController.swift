@@ -81,7 +81,7 @@ final class EditCategoryViewController: UIViewController {
     
     @objc
     func didTapAddCategoryButton(){
-        let storage = TrackerStorage.shared
+        let storage = TrackerStorageCoreData.shared
         var storedCategories = storage.loadCategories()
         guard let title = categoryNameTextField.text,
               title != "" else { return }

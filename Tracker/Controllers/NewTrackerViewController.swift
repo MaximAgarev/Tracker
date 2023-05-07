@@ -33,7 +33,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     }
         
     func didTapCreateButton(){
-        storage = TrackerStorage.shared
+        storage = TrackerStorageCoreData.shared
         guard let storage = storage else { return }
         var storedCategories = storage.loadCategories()
         

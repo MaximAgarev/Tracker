@@ -1,15 +1,5 @@
 import Foundation
 
-protocol TrackerStorageProtocol {
-    func loadCategories() -> [TrackerCategory]
-    func saveCategories(categories: [TrackerCategory])
-    func deleteCategory(categoryTitle: String)
-    func loadCompletedTrackers() -> Set<TrackerRecord>
-    func saveCompletedTrackers(completedTrackers: Set<TrackerRecord>)
-    func count() -> Int
-    func trackerID() -> Int
-}
-
 class TrackerStorage: TrackerStorageProtocol {
     static let shared = TrackerStorage()
     private init() {}

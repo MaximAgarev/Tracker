@@ -24,19 +24,22 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     var currentDate: Date = Date().withoutTime()
     var visibleCategories: [TrackerCategory] = []
     var completedTrackers: Set<TrackerRecord> = []
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         guard let navigationController = navigationController else { return }
-                let trackersView = TrackersView(frame: .zero,
-                                                viewController: self,
-                                                navigationController: navigationController,
-                                                navigationItem: navigationItem
-                )
+        let trackersView = TrackersView(frame: .zero,
+                                        viewController: self,
+                                        navigationController: navigationController,
+                                        navigationItem: navigationItem
+        )
         trackersView.viewController = self
         self.trackersView = trackersView
-        storage = TrackerStorage.shared
+#warning("Remove this")
+//        storage = TrackerStorage.shared
+
+        storage = TrackerStorageCoreData.shared
         
         NotificationCenter.default.addObserver(
             self,
@@ -54,7 +57,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         
         guard let storage = storage else { return }
         categories = storage.loadCategories()
-        completedTrackers = storage.loadCompletedTrackers()
+        #warning("Completed trackers")
+//        completedTrackers = storage.loadCompletedTrackers()
         
         visibleCategories = filterByWeekday(categories: categories)
         trackersView?.setTrackersCollection()
@@ -75,9 +79,9 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
                 }
             }
             if !categoryInFilter.trackers.isEmpty { filteredCategories.append(categoryInFilter) }
-            }
-        return filteredCategories
         }
+        return filteredCategories
+    }
     
     func searchTrackers(text: String) {
         visibleCategories = []
@@ -107,7 +111,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         storage.saveCompletedTrackers(completedTrackers: completedTrackers)
         setView()
     }
-        
+    
     func presentNewTrackerViewController() {
         let newTrackerViewController = ChoiceViewController()
         newTrackerViewController.modalPresentationStyle = .popover
