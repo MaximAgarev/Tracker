@@ -187,7 +187,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     }
     
     func addRecordToCompleted(id: Int, date: Date) {
-        recordRequest.predicate = NSPredicate(format: "trackerID == %d", Int64(id))
+        recordRequest.predicate = NSPredicate(format: "trackerID == %d AND date == %@", Int64(id), date as CVarArg)
         do {
             let recordFromStorage = try context.fetch(recordRequest)
             if recordFromStorage.isEmpty {

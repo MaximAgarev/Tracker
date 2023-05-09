@@ -45,7 +45,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
             name: NSNotification.Name(rawValue: "updateTrackers"),
             object: nil
         )
-        
         setView()
     }
     
@@ -100,11 +99,13 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     func trackButtonDidTap(trackerID: Int) {
         let trackerRecord = TrackerRecord(id: trackerID, date: currentDate.withoutTime())
+
         if completedTrackers.contains(trackerRecord) {
             completedTrackers.remove(trackerRecord)
         } else {
             completedTrackers.insert(trackerRecord)
         }
+
         guard let storage = storage else { return }
         storage.saveCompletedTrackers(completedTrackers: completedTrackers)
         setView()

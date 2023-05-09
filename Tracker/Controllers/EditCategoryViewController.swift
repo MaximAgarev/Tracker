@@ -92,7 +92,9 @@ final class EditCategoryViewController: UIViewController {
             storedCategories.append(TrackerCategory(title: title, trackers: []))
         } else {
             guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
+            let completedTrackers = storage.loadCompletedTrackers()
             storage.deleteCategory(categoryTitle: storedCategories[index].title)
+            storage.saveCompletedTrackers(completedTrackers: completedTrackers)
             storedCategories[index].title = title
         }
         storage.saveCategories(categories: storedCategories)
