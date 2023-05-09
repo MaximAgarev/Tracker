@@ -44,6 +44,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
             emoji: trackerParams.emoji,
             color: trackerParams.color
         )
+        
         guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
         storedCategories[index].trackers.append(tracker)
         storage.saveCategories(categories: storedCategories)

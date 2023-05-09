@@ -92,9 +92,11 @@ final class EditCategoryViewController: UIViewController {
             storedCategories.append(TrackerCategory(title: title, trackers: []))
         } else {
             guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
+            storage.deleteCategory(categoryTitle: storedCategories[index].title)
             storedCategories[index].title = title
         }
         storage.saveCategories(categories: storedCategories)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
         dismiss(animated: true)
     }
 }

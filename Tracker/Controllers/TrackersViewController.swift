@@ -36,8 +36,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         )
         trackersView.viewController = self
         self.trackersView = trackersView
-#warning("Remove this")
-//        storage = TrackerStorage.shared
 
         storage = TrackerStorageCoreData.shared
         
@@ -54,11 +52,11 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     @objc
     func setView() {
         self.view = trackersView as? UIView
-        
+
         guard let storage = storage else { return }
         categories = storage.loadCategories()
-        #warning("Completed trackers")
-//        completedTrackers = storage.loadCompletedTrackers()
+
+        completedTrackers = storage.loadCompletedTrackers()
         
         visibleCategories = filterByWeekday(categories: categories)
         trackersView?.setTrackersCollection()
@@ -69,7 +67,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         categories.forEach { category in
             var categoryInFilter = TrackerCategory(title: category.title, trackers: [])
             category.trackers.forEach { tracker in
-                if tracker.schedule == "" {
+                if tracker.schedule == "" || tracker.schedule == Weekday.everyDay {
                     categoryInFilter.trackers.append(tracker)
                 } else {
                     let currentWeekday = Weekday.converted[Calendar.current.component(.weekday, from: currentDate)]
