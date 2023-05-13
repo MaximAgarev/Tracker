@@ -118,7 +118,7 @@ extension NewTrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as? CollectionCell
         guard let cell = cell else { return CollectionCell() }
-        cell.layer.cornerRadius = 16
+        cell.layer.cornerRadius = 14
         cell.layer.masksToBounds = true
         
         if collectionView.tag == 1 {
@@ -159,9 +159,10 @@ extension NewTrackerViewController: UICollectionViewDelegate {
             newTrackerView?.createButtonAvailability(element: "emoji", state: true)
         } else {
             cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
             if let color = cell?.titleLabel.backgroundColor {
                 trackerParams.color = UIColor.ypColorSelection.firstIndex(of: color) ?? 0
+                let borderColor = color.withAlphaComponent(0.3)
+                cell?.layer.borderColor = borderColor.cgColor
             }
             newTrackerView?.createButtonAvailability(element: "color", state: true)
         }

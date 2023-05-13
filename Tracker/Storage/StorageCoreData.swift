@@ -15,11 +15,24 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     static let shared = TrackerStorageCoreData()
     private init() {}
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     let categoryRequest = TrackerCategoryCD.fetchRequest()
     let trackerRequest = TrackerCD.fetchRequest()
     let recordRequest = TrackerRecordCD.fetchRequest()
     let sortByTitle = NSSortDescriptor(key: "title", ascending: true)
+    
+// MARK: - Container & context
+    private lazy var persistentContainer: NSPersistentContainer = {
+           let container = NSPersistentContainer(name: "Tracker")
+           container.loadPersistentStores { description, error in
+               if let error = error {
+                   fatalError("Unable to load persistent stores: \(error)")
+               }
+           }
+           return container
+       }()
+    var readContext: NSManagedObjectContext {
+          persistentContainer.viewContext
+        }
     
 // MARK: - Load categories & trackers
     func loadCategories() -> [TrackerCategory] {
@@ -28,7 +41,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
         
         do {
             categoryRequest.sortDescriptors = [sortByTitle]
-            categoriesFromStorage = try context.fetch(categoryRequest)
+            categoriesFromStorage = try readContext.fetch(categoryRequest)
         }
         catch {
             assertionFailure("Couln't load categories from CoreData!")
@@ -49,7 +62,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
         trackerRequest.predicate = NSPredicate(format: "category.title == %@", category.title!)
         do {
             trackerRequest.sortDescriptors = [sortByTitle]
-            trackersFromStorage = try context.fetch(trackerRequest)
+            trackersFromStorage = try readContext.fetch(trackerRequest)
         }
         catch {
             assertionFailure("Couln't load trackers from CoreData!")
@@ -71,10 +84,10 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     func saveCategories(categories: [TrackerCategory]) {
         for category in categories {
             categoryRequest.predicate = NSPredicate(format: "title == %@", category.title)
-            let searchCategory = try? context.fetch(categoryRequest).first
+            let searchCategory = try? readContext.fetch(categoryRequest).first
             
             if searchCategory == nil {
-                let newCategory = TrackerCategoryCD(context: context)
+                let newCategory = TrackerCategoryCD(context: readContext)
                 newCategory.title = category.title
                 for tracker in category.trackers {
                     saveTracker(tracker: tracker, category: newCategory)
@@ -87,7 +100,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
         }
         categoryRequest.predicate = nil
         do {
-            try context.save()
+            try readContext.save()
         }
         catch {
             assertionFailure("Couln't save categories to CoreData!")
@@ -97,27 +110,26 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     
     func saveTracker(tracker: Tracker, category: TrackerCategoryCD?) {
         trackerRequest.predicate = NSPredicate(format:"title == %@", tracker.title)
-        let searchTracker = try! context.fetch(trackerRequest)
+        guard let searchTracker = try? readContext.fetch(trackerRequest) else { return }
         if searchTracker.isEmpty {
-            let newTracker = TrackerCD(context: context)
+            let newTracker = TrackerCD(context: readContext)
             newTracker.trackerID = Int64(trackerID())
             newTracker.category = category
             newTracker.title = tracker.title
             newTracker.schedule = tracker.schedule
             newTracker.emoji = tracker.emoji
             newTracker.color = Int64(tracker.color)
-        } else {
-            let updatedTracker = searchTracker.first(where: { $0.category?.title == category?.title })
-            updatedTracker?.trackerID = Int64(tracker.id)
-            updatedTracker?.category = category
-            updatedTracker?.title = tracker.title
-            updatedTracker?.schedule = tracker.schedule
-            updatedTracker?.emoji = tracker.emoji
-            updatedTracker?.color = Int64(tracker.color)
+        } else if let updatedTracker = searchTracker.first(where: { $0.category?.title == category?.title }) {
+            updatedTracker.trackerID = Int64(tracker.id)
+            updatedTracker.category = category
+            updatedTracker.title = tracker.title
+            updatedTracker.schedule = tracker.schedule
+            updatedTracker.emoji = tracker.emoji
+            updatedTracker.color = Int64(tracker.color)
         }
         trackerRequest.predicate = nil
         do {
-            try context.save()
+            try readContext.save()
         }
         catch {
             assertionFailure("Couln't save trackers to CoreData!")
@@ -128,11 +140,11 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     func deleteCategory(categoryTitle: String) {
         categoryRequest.predicate = NSPredicate(format: "title == %@", categoryTitle)
         do {
-            let deleteCategory = try context.fetch(categoryRequest)
+            let deleteCategory = try readContext.fetch(categoryRequest)
             if !deleteCategory.isEmpty {
                 deleteTrackers(category: deleteCategory[0])
-                context.delete(deleteCategory[0])
-                try context.save()
+                readContext.delete(deleteCategory[0])
+                try readContext.save()
             }
         }
         catch {
@@ -142,16 +154,17 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     }
     
     func deleteTrackers(category: TrackerCategoryCD) {
-        trackerRequest.predicate = NSPredicate(format: "category.title == %@", category.title!)
+        guard let title = category.title else { return }
+        trackerRequest.predicate = NSPredicate(format: "category.title == %@", title)
         do {
-            let trackersFromStorage = try context.fetch(trackerRequest)
+            let trackersFromStorage = try readContext.fetch(trackerRequest)
             if !trackersFromStorage.isEmpty {
                 trackersFromStorage.forEach { tracker in
-                    context.delete(tracker)
+                    readContext.delete(tracker)
                     removeDeletedTrackerRecords(id: tracker.trackerID)
                 }
             }
-            try context.save()
+            try readContext.save()
         }
         catch {
             assertionFailure("Couln't delete trackers from CoreData!")
@@ -165,7 +178,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
         var recordsFromStorage: [TrackerRecordCD] = []
         
         do {
-            recordsFromStorage = try context.fetch(recordRequest)
+            recordsFromStorage = try readContext.fetch(recordRequest)
         }
         catch {
             assertionFailure("Couln't load categories from CoreData!")
@@ -189,13 +202,13 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     func addRecordToCompleted(id: Int, date: Date) {
         recordRequest.predicate = NSPredicate(format: "trackerID == %d AND date == %@", Int64(id), date as CVarArg)
         do {
-            let recordFromStorage = try context.fetch(recordRequest)
+            let recordFromStorage = try readContext.fetch(recordRequest)
             if recordFromStorage.isEmpty {
-                let newRecord = TrackerRecordCD(context: context)
+                let newRecord = TrackerRecordCD(context: readContext)
                 newRecord.trackerID = Int64(id)
                 newRecord.date = date.withoutTime()
             }
-            try context.save()
+            try readContext.save()
         }
         catch {
             assertionFailure("Couln't save completed trackers to CoreData!")
@@ -205,14 +218,14 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
 
     func removeRecordFromCompleted(completedTrackers: Set<TrackerRecord>) {
         do {
-            let recordsFromStorage = try context.fetch(recordRequest)
+            let recordsFromStorage = try readContext.fetch(recordRequest)
             for recordCD in recordsFromStorage {
                 let record = TrackerRecord(
                     id: Int(recordCD.trackerID),
                     date: recordCD.date ?? Date()
                 )
                 if !completedTrackers.contains(record) {
-                    context.delete(recordCD)
+                    readContext.delete(recordCD)
                 }
             }
         }
@@ -224,11 +237,11 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     func removeDeletedTrackerRecords(id: Int64) {
         recordRequest.predicate = NSPredicate(format: "trackerID == %d", id)
         do {
-            let recordsFromStorage = try context.fetch(recordRequest)
+            let recordsFromStorage = try readContext.fetch(recordRequest)
             recordsFromStorage.forEach { record in
-                context.delete(record)
+                readContext.delete(record)
             }
-            try context.save()
+            try readContext.save()
         }
         catch {
             assertionFailure("Couln't delete tracker records from CoreData!")
@@ -240,7 +253,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
     func count() -> Int {
         var categoriesCount: Int = 0
         do {
-            categoriesCount = try context.fetch(categoryRequest).count
+            categoriesCount = try readContext.fetch(categoryRequest).count
         }
         catch {
             assertionFailure("Couln't count categories in CoreData!")
@@ -252,7 +265,7 @@ final class TrackerStorageCoreData: TrackerStorageProtocol {
         var maxID = 0
         
         trackerRequest.predicate = nil
-        let trackers = try? context.fetch(trackerRequest)
+        let trackers = try? readContext.fetch(trackerRequest)
         guard var trackers = trackers else { return 0 }
         
         if !trackers.isEmpty {
