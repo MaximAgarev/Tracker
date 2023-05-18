@@ -93,6 +93,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D01AEB002A152FBE00CD9D83 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				D066164E2A064DDB004A3A7D /* StorageCoreData.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
 		D089E5D329DA2B6F005F9FAF /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,7 +200,6 @@
 			isa = PBXGroup;
 			children = (
 				D0CACCCF29F580F400BD9D91 /* Storage.swift */,
-				D066164E2A064DDB004A3A7D /* StorageCoreData.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -242,6 +249,7 @@
 		D0F9C41329DA11E6009C7686 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				D01AEB002A152FBE00CD9D83 /* Domain */,
 				D0ACD29029F9458A000FB7F3 /* Views */,
 				D0ACD28F29F94536000FB7F3 /* Controllers */,
 				D0ACD28E29F94528000FB7F3 /* Models */,

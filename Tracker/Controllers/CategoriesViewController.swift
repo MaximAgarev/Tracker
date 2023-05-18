@@ -36,7 +36,7 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     
     func setView() {
         guard let storage = storage else { return }
-        storedCategories = storage.loadCategories()
+        storedCategories = storage.loadCategories(date: nil, searchText: nil)
         if storedCategories.count == 0 {
             self.view = EmptyCategoriesView(frame: .zero, viewController: self)
         } else {
@@ -113,7 +113,7 @@ extension CategoriesViewController: UITableViewDelegate {
                     let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
                         self?.storage?.deleteCategory(categoryTitle: title ?? "")
                         guard let storage = self?.storage else { return }
-                        self?.storedCategories = storage.loadCategories()
+                        self?.storedCategories = storage.loadCategories(date: nil, searchText: nil)
                         self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                         self?.setView()
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)

@@ -38,6 +38,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.trackersView = trackersView
 
         storage = TrackerStorageCoreData.shared
+        storage?.delegate = self
         
         NotificationCenter.default.addObserver(
             self,
@@ -53,7 +54,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.view = trackersView as? UIView
 
         guard let storage = storage else { return }
-        categories = storage.loadCategories()
+        categories = storage.loadCategories(date: currentDate, searchText: nil)
 
         completedTrackers = storage.loadCompletedTrackers()
         
@@ -81,6 +82,10 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func searchTrackers(text: String) {
+        storage?.loadCategories(date: currentDate, searchText: text)
+        
+#warning("remove")
+        print("Old code below")
         visibleCategories = []
         categories.forEach { category in
             var categoryInSearch = TrackerCategory(title: category.title, trackers: [])

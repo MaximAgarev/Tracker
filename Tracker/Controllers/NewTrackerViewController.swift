@@ -35,7 +35,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     func didTapCreateButton(){
         storage = TrackerStorageCoreData.shared
         guard let storage = storage else { return }
-        var storedCategories = storage.loadCategories()
+        var storedCategories = storage.loadCategories(date: nil, searchText: nil)
         
         let tracker = Tracker(
             id: storage.trackerID(),
