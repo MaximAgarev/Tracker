@@ -15,7 +15,6 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     var categoriesView: CategoriesViewProtocol?
     var delegate: NewTrackerViewController?
     
-    var storedCategories: [TrackerCategory] = []
     var selectedCategory: String?
     
     private lazy var headerLabel: UILabel = {
@@ -36,8 +35,8 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     
     func setView() {
         guard let storage = storage else { return }
-        storedCategories = storage.loadCategories(date: nil, searchText: nil)
-        if storedCategories.count == 0 {
+        storage.fetchTrackers(date: nil, searchText: nil)
+        if storage.numberOfSections == 0 {
             self.view = EmptyCategoriesView(frame: .zero, viewController: self)
         } else {
             self.view = CategoriesView(frame: .zero, viewController: self)
@@ -61,7 +60,7 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
 
 extension CategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storedCategories.count
+        return storage?.numberOfSections ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,7 +68,7 @@ extension CategoriesViewController: UITableViewDataSource {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
         }
-        cell.textLabel?.text = storedCategories[indexPath.row].title
+        cell.textLabel?.text = storage?.getCategoryTitle(section: indexPath.row)
         cell.accessoryType = cell.textLabel?.text == selectedCategory ? .checkmark : .none
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .none
@@ -113,7 +112,7 @@ extension CategoriesViewController: UITableViewDelegate {
                     let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
                         self?.storage?.deleteCategory(categoryTitle: title ?? "")
                         guard let storage = self?.storage else { return }
-                        self?.storedCategories = storage.loadCategories(date: nil, searchText: nil)
+                        storage.fetchTrackers(date: nil, searchText: nil)
                         self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                         self?.setView()
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)

@@ -7,7 +7,9 @@ protocol TrackerStorageProtocol {
     var numberOfSections: Int { get }
     func numberOfRowsInSection(_ section: Int) -> Int
     
-    func loadCategories(date: Date?, searchText: String?) -> [TrackerCategory]
+    func fetchTrackers(date: Date?, searchText: String?)
+    func getTracker(section: Int, index: Int) -> Tracker?
+    func getCategoryTitle(section: Int) -> String
     func saveCategories(categories: [TrackerCategory])
     func deleteCategory(categoryTitle: String)
     func loadCompletedTrackers() -> Set<TrackerRecord>
@@ -23,10 +25,10 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     weak var delegate: AnyObject?
     
     var numberOfSections: Int {
-        return 0
+        return fetchedResultsController.sections?.count ?? 0
     }
     func numberOfRowsInSection(_ section: Int) -> Int {
-        return 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     let categoryRequest = TrackerCategoryCD.fetchRequest()
@@ -65,79 +67,44 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     }()
     
 // MARK: - Load categories & trackers
-    func loadCategories(date: Date?, searchText: String?) -> [TrackerCategory] {
-        var schedulePredicates: [NSPredicate] = []
-        schedulePredicates.append(NSPredicate(format: "schedule CONTAINS %@", Weekday.everyDay))
-        schedulePredicates.append(NSPredicate(format: "schedule == %@", ""))
+    func fetchTrackers(date: Date?, searchText: String?) {
+        var predicates: [NSPredicate] = []
+        
         if let date = date {
+            var schedulePredicates: [NSPredicate] = []
+            schedulePredicates.append(NSPredicate(format: "schedule CONTAINS %@", Weekday.everyDay))
+            schedulePredicates.append(NSPredicate(format: "schedule == %@", ""))
             schedulePredicates.append(
                 NSPredicate(format: "schedule CONTAINS[n] %@", Weekday.converted[Calendar.current.component(.weekday, from: date )])
             )
+            let schedulePredicate = NSCompoundPredicate(orPredicateWithSubpredicates: schedulePredicates)
+            predicates.append(schedulePredicate)
         }
-        let schedulePredicate = NSCompoundPredicate(orPredicateWithSubpredicates: schedulePredicates)
-        
+                
         if let searchText = searchText {
             let searchPredicate = NSPredicate(format: "title CONTAINS[c] %@", searchText)
-            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(
-                andPredicateWithSubpredicates: [
-                    schedulePredicate,
-                    searchPredicate
-                ])
+            predicates.append(searchPredicate)
+        }
+        
+        if predicates.isEmpty {
+            fetchedResultsController.fetchRequest.predicate = nil
         } else {
-            fetchedResultsController.fetchRequest.predicate = schedulePredicate
+            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(
+                andPredicateWithSubpredicates: predicates
+            )
         }
     
         try? fetchedResultsController.performFetch()
-        
-#warning("remove")
-        print("___")
-        guard let objects = fetchedResultsController.fetchedObjects else { return [] }
-        for object in objects {
-            print(object.title, object.schedule)
-        }
-        
-        var categories: [TrackerCategory] = []
-        var categoriesFromStorage: [TrackerCategoryCD] = []
-        
-        do {
-            categoryRequest.sortDescriptors = [sortByTitle]
-            categoriesFromStorage = try context.fetch(categoryRequest)
-        }
-        catch {
-            assertionFailure("Couln't load categories from CoreData!")
-        }
-        for categoryCD in categoriesFromStorage {
-            categories.append(TrackerCategory(
-                title: categoryCD.title ?? "",
-                trackers: loadTrackers(category: categoryCD)
-            ))
-        }
-        return categories
     }
     
-    func loadTrackers(category: TrackerCategoryCD) -> [Tracker] {
-        var trackers: [Tracker] = []
-        var trackersFromStorage: [TrackerCD] = []
-        
-        trackerRequest.predicate = NSPredicate(format: "category.title == %@", category.title!)
-        do {
-            trackerRequest.sortDescriptors = [sortByTitle]
-            trackersFromStorage = try context.fetch(trackerRequest)
-        }
-        catch {
-            assertionFailure("Couln't load trackers from CoreData!")
-        }
-        for trackerCD in trackersFromStorage {
-            trackers.append(Tracker(
-                id: Int((trackerCD.trackerID)),
-                title: trackerCD.title ?? "",
-                schedule: trackerCD.schedule ?? "",
-                emoji: trackerCD.emoji ?? "",
-                color: Int(trackerCD.color)
-            ))
-        }
-        trackerRequest.predicate = nil
-        return trackers
+    func getTracker(section: Int, index: Int) -> Tracker? {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[index] as? TrackerCD else { return nil }
+        return TrackerStore().getTracker(tracker)
+    }
+    
+    func getCategoryTitle(section: Int) -> String {
+        guard let firstTracker = fetchedResultsController.sections?[section].objects?.first as? TrackerCD else { return "" }
+        return TrackerCategoryStore().getCategoryTitle(of: firstTracker)
     }
     
 // MARK: - Save categories & trackers

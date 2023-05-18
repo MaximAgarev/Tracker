@@ -81,25 +81,25 @@ final class EditCategoryViewController: UIViewController {
     
     @objc
     func didTapAddCategoryButton(){
-        let storage = TrackerStorageCoreData.shared
-        var storedCategories = storage.loadCategories(date: nil, searchText: nil)
-        guard let title = categoryNameTextField.text,
-              title != "" else { return }
-        for category in storedCategories {
-            if category.title == title { return }
-        }
-        if isNew {
-            storedCategories.append(TrackerCategory(title: title, trackers: []))
-        } else {
-            guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
-            let completedTrackers = storage.loadCompletedTrackers()
-            storage.deleteCategory(categoryTitle: storedCategories[index].title)
-            storage.saveCompletedTrackers(completedTrackers: completedTrackers)
-            storedCategories[index].title = title
-        }
-        storage.saveCategories(categories: storedCategories)
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
-        dismiss(animated: true)
+//        let storage = TrackerStorageCoreData.shared
+//        storage.fetchTrackers(date: nil, searchText: nil)
+//        guard let title = categoryNameTextField.text,
+//              title != "" else { return }
+//        for category in storedCategories {
+//            if category.title == title { return }
+//        }
+//        if isNew {
+//            storedCategories.append(TrackerCategory(title: title, trackers: []))
+//        } else {
+//            guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
+//            let completedTrackers = storage.loadCompletedTrackers()
+//            storage.deleteCategory(categoryTitle: storedCategories[index].title)
+//            storage.saveCompletedTrackers(completedTrackers: completedTrackers)
+//            storedCategories[index].title = title
+//        }
+//        storage.saveCategories(categories: storedCategories)
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
+//        dismiss(animated: true)
     }
 }
 

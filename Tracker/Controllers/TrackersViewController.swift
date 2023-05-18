@@ -4,9 +4,8 @@ protocol TrackersViewControllerProtocol: AnyObject {
     var trackersView: TrackersViewProtocol? { get set }
     var storage: TrackerStorageProtocol? { get set }
     
-    var categories: [TrackerCategory] { get set }
+//    var categories: [TrackerCategory] { get set }
     var currentDate: Date { get set }
-    var visibleCategories: [TrackerCategory] { get set }
     var completedTrackers: Set<TrackerRecord> { get set }
     
     func setView()
@@ -22,7 +21,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     var categories: [TrackerCategory] = []
     var currentDate: Date = Date().withoutTime()
-    var visibleCategories: [TrackerCategory] = []
     var completedTrackers: Set<TrackerRecord> = []
     
     override func viewDidLoad() {
@@ -54,11 +52,10 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.view = trackersView as? UIView
 
         guard let storage = storage else { return }
-        categories = storage.loadCategories(date: currentDate, searchText: nil)
+        storage.fetchTrackers(date: currentDate, searchText: nil)
 
         completedTrackers = storage.loadCompletedTrackers()
         
-        visibleCategories = filterByWeekday(categories: categories)
         trackersView?.setTrackersCollection()
     }
     
@@ -82,23 +79,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func searchTrackers(text: String) {
-        storage?.loadCategories(date: currentDate, searchText: text)
-        
-#warning("remove")
-        print("Old code below")
-        visibleCategories = []
-        categories.forEach { category in
-            var categoryInSearch = TrackerCategory(title: category.title, trackers: [])
-            category.trackers.forEach { tracker in
-                if tracker.title.lowercased().range(of: text.lowercased()) != nil {
-                    categoryInSearch.trackers.append(tracker)
-                }
-            }
-            if !visibleCategories.contains(categoryInSearch) {
-                if !categoryInSearch.trackers.isEmpty { visibleCategories.append(categoryInSearch) }
-            }
-        }
-        visibleCategories = filterByWeekday(categories: visibleCategories)
+        storage?.fetchTrackers(date: currentDate, searchText: text)
         trackersView?.setTrackersCollection()
     }
     

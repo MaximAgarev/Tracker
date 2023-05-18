@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D01AEB022A1633ED00CD9D83 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */; };
+		D01AEB042A16415100CD9D83 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */; };
 		D02E3CB529F16CC300DFE26B /* EmptyCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */; };
 		D02E3CB729F1A05000DFE26B /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB629F1A05000DFE26B /* CategoriesView.swift */; };
 		D066164D2A064CC0004A3A7D /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D066164B2A064CC0004A3A7D /* Tracker.xcdatamodeld */; };
@@ -44,6 +46,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
+		D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCategoriesView.swift; sourceTree = "<group>"; };
 		D02E3CB629F1A05000DFE26B /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		D066164C2A064CC0004A3A7D /* Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tracker.xcdatamodel; sourceTree = "<group>"; };
@@ -97,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				D066164E2A064DDB004A3A7D /* StorageCoreData.swift */,
+				D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */,
+				D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -337,6 +343,7 @@
 				D089E5ED29DDD956005F9FAF /* Emojies.swift in Sources */,
 				D089E5F129DF54B2005F9FAF /* TrackButton.swift in Sources */,
 				D0CACCC629F4211400BD9D91 /* ScheduleViewController.swift in Sources */,
+				D01AEB042A16415100CD9D83 /* TrackerCategoryStore.swift in Sources */,
 				D089E5DF29DD7C14005F9FAF /* TrackersCell.swift in Sources */,
 				D089E5F329DF6AB8005F9FAF /* ChoiceViewController.swift in Sources */,
 				D089E5D229DA26E3005F9FAF /* TabBarController.swift in Sources */,
@@ -350,6 +357,7 @@
 				D066164D2A064CC0004A3A7D /* Tracker.xcdatamodeld in Sources */,
 				D0F1B6FB29E3155B00471968 /* UITextField+Extension.swift in Sources */,
 				D0F9C41529DA11E6009C7686 /* AppDelegate.swift in Sources */,
+				D01AEB022A1633ED00CD9D83 /* TrackerStore.swift in Sources */,
 				D0CACCD029F580F400BD9D91 /* Storage.swift in Sources */,
 				D089E5F729DF6DC0005F9FAF /* ChoiceView.swift in Sources */,
 				D0CACCCC29F5509600BD9D91 /* EditCategoryViewController.swift in Sources */,

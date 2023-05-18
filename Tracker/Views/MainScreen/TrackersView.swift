@@ -109,10 +109,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
         emptyLabel.removeFromSuperview()
         emptyImageView.removeFromSuperview()
         collectionView.removeFromSuperview()
-        
-        guard let isEmpty = viewController?.visibleCategories.isEmpty else { return }
-        
-        if isEmpty {
+                
+        if viewController?.storage?.numberOfSections == 0 {
             showEmptyTab()
             return
         }
@@ -154,19 +152,16 @@ final class TrackersView: UIView, TrackersViewProtocol {
 //MARK: - Extensions
 extension TrackersView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let viewController = viewController else { return 0 }
-        return viewController.visibleCategories.count
+        return viewController?.storage?.numberOfSections ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let viewController = viewController else { return 0 }
-        let trackers = viewController.visibleCategories[section].trackers
-        return trackers.count
+        return viewController?.storage?.numberOfRowsInSection(section) ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
-        let tracker = viewController?.visibleCategories[indexPath.section].trackers[indexPath.row]
+        let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
@@ -207,7 +202,8 @@ extension TrackersView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "categoryHeader", for: indexPath) as? TrackersHeader
         guard let header = header else { return TrackersHeader() }
-        header.titleLabel.text = viewController?.visibleCategories[indexPath.section].title
+        header.titleLabel.text = viewController?.storage?.getCategoryTitle(section: indexPath.section)
+//        viewController?.visibleCategories[indexPath.section].title
         return header
     }
         
