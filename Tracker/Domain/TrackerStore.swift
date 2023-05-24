@@ -46,7 +46,7 @@ final class TrackerStore {
             try context.save()
         }
         catch {
-            assertionFailure("Couln't save trackers to CoreData!")
+            assertionFailure("Couln't save tracker to CoreData")
         }
         trackerRequest.predicate = nil
     }
@@ -65,8 +65,23 @@ final class TrackerStore {
             try context.save()
         }
         catch {
-            assertionFailure("Couln't delete trackers from CoreData!")
+            assertionFailure("Couln't delete trackers from CoreData")
         }
         trackerRequest.predicate = nil
+    }
+    
+    func trackerID() -> Int {
+        var maxID = 0
+        
+        trackerRequest.predicate = nil
+        let trackers = try? context.fetch(trackerRequest)
+        guard var trackers = trackers else { return 0 }
+        
+        if !trackers.isEmpty {
+            trackers.sort( by: { $0.trackerID > $1.trackerID } )
+            maxID = Int(trackers[0].trackerID + 1)
+        }
+        
+        return maxID
     }
 }

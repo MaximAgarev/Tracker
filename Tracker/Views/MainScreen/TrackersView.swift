@@ -159,17 +159,16 @@ extension TrackersView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackersCell else { return UICollectionViewCell() }
         let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
-#warning("Replace tags with trackerID")
         cell.trackerID = trackerID
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
         cell.titleLabel.text = tracker?.title
         cell.emodjiLabel.text = tracker?.emoji
         cell.daysCountLabel.text = daysCompleted(trackerID: trackerID).days()
-        cell.trackButton.tag = trackerID
+        cell.trackButton.trackerID = trackerID
         cell.trackButton.isChecked = buttonIsChecked(trackerID: trackerID)
         cell.trackButton.addTarget(self, action: #selector(trackButtonDidTap(sender:)), for: .touchUpInside)
         cell.trackButton.tintColor = UIColor.ypColorSelection[tracker?.color ?? 0]
@@ -197,9 +196,9 @@ extension TrackersView: UICollectionViewDataSource {
         guard let currentDate = viewController?.currentDate.withoutTime() else { return }
         if  currentDate > Date().withoutTime() { return }
         
-        let buttonTapped = sender as! TrackButton
-        let trackerID = buttonTapped.tag
-        buttonTapped.isChecked.toggle()
+        let buttonTapped = sender as? TrackButton
+        guard let trackerID = buttonTapped?.trackerID else { return }
+        buttonTapped?.isChecked.toggle()
         viewController?.trackButtonDidTap(trackerID: trackerID)
     }
     
@@ -207,7 +206,6 @@ extension TrackersView: UICollectionViewDataSource {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "categoryHeader", for: indexPath) as? TrackersHeader
         guard let header = header else { return TrackersHeader() }
         header.titleLabel.text = viewController?.storage?.getCategoryTitle(section: indexPath.section)
-//        viewController?.visibleCategories[indexPath.section].title
         return header
     }
         

@@ -51,11 +51,11 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
 //        storage.saveCategories(categories: storedCategories)
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
-        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     func didTapCancelButton(){
-        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
 }
@@ -122,7 +122,8 @@ extension NewTrackerViewController: UICollectionViewDataSource {
         cell.layer.cornerRadius = 14
         cell.layer.masksToBounds = true
         
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell.titleLabel.text = emojies[indexPath.row]
         } else {
             cell.titleLabel.backgroundColor = .ypColorSelection[indexPath.row]
@@ -154,7 +155,8 @@ extension NewTrackerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.view.endEditing(true)
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell?.backgroundColor = .ypLightGray
             trackerParams.emoji = cell?.titleLabel.text ?? ""
             newTrackerView?.createButtonAvailability(element: "emoji", state: true)
@@ -171,7 +173,8 @@ extension NewTrackerViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell?.backgroundColor = .ypWhite
         } else {
             cell?.layer.borderWidth = 3

@@ -37,7 +37,7 @@ final class TrackerCategoryStore {
             categories = try context.fetch(categoryRequest)
         }
         catch {
-            assertionFailure("Couln't load categories from CoreData!")
+            assertionFailure("Couln't load categories from CoreData")
         }
         for category in categories {
             if category.title == title { return true }
@@ -52,8 +52,9 @@ final class TrackerCategoryStore {
             try context.save()
         }
         catch {
-            assertionFailure("Couln't save categories to CoreData!")
+            assertionFailure("Couln't save categories to CoreData")
         }
+        storage.categoriesList = getCategoriesList()
     }
     
     func updateCategory(editTitle: String, newTitle: String) {
@@ -65,8 +66,9 @@ final class TrackerCategoryStore {
             try context.save()
         }
         catch {
-            assertionFailure("Couln't save categories to CoreData!")
+            assertionFailure("Couln't save categories to CoreData")
         }
+        storage.categoriesList = getCategoriesList()
     }
     
     func deleteCategory(categoryTitle: String) {
@@ -80,7 +82,7 @@ final class TrackerCategoryStore {
             }
         }
         catch {
-            assertionFailure("Couln't delete category \(categoryTitle) from CoreData!")
+            assertionFailure("Couln't delete category \(categoryTitle) from CoreData")
         }
         categoryRequest.predicate = nil
         storage.categoriesList = getCategoriesList()
