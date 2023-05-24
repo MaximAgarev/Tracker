@@ -4,7 +4,6 @@ protocol TrackersViewControllerProtocol: AnyObject {
     var trackersView: TrackersViewProtocol? { get set }
     var storage: TrackerStorageProtocol? { get set }
     
-//    var categories: [TrackerCategory] { get set }
     var currentDate: Date { get set }
     var completedTrackers: Set<TrackerRecord> { get set }
     
@@ -57,25 +56,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         completedTrackers = storage.loadCompletedTrackers()
         
         trackersView?.setTrackersCollection()
-    }
-    
-    func filterByWeekday(categories: [TrackerCategory]) -> [TrackerCategory] {
-        var filteredCategories: [TrackerCategory] = []
-        categories.forEach { category in
-            var categoryInFilter = TrackerCategory(title: category.title, trackers: [])
-            category.trackers.forEach { tracker in
-                if tracker.schedule == "" || tracker.schedule == Weekday.everyDay {
-                    categoryInFilter.trackers.append(tracker)
-                } else {
-                    let currentWeekday = Weekday.converted[Calendar.current.component(.weekday, from: currentDate)]
-                    if tracker.schedule.range(of: currentWeekday) != nil {
-                        categoryInFilter.trackers.append(tracker)
-                    }
-                }
-            }
-            if !categoryInFilter.trackers.isEmpty { filteredCategories.append(categoryInFilter) }
-        }
-        return filteredCategories
     }
     
     func searchTrackers(text: String) {

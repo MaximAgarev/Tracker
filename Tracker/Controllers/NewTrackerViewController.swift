@@ -5,7 +5,7 @@ protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
     
-    var category: TrackerCategory { get set }
+    var category: String { get set } //TrackerCategory { get set }
     var trackerParams: TrackerParams { get set }
         
     func didTapCreateButton()
@@ -17,7 +17,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     var newTrackerView: NewTrackerViewProtocol?
     var isHabit: Bool = true
     
-    var category: TrackerCategory = TrackerCategory(title: "", trackers: [])
+    var category: String = "" //TrackerCategory = TrackerCategory(title: "", trackers: [])
     var trackerParams: TrackerParams = TrackerParams(id: 0, title: "", schedule: "", emoji: "", color: 0)
     
     override func viewDidLoad() {
@@ -35,7 +35,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     func didTapCreateButton(){
         storage = TrackerStorageCoreData.shared
         guard let storage = storage else { return }
-        storage.fetchTrackers(date: nil, searchText: nil)
+//        storage.fetchTrackers(date: nil, searchText: nil)
         
         let tracker = Tracker(
             id: storage.trackerID(),
@@ -44,7 +44,8 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
             emoji: trackerParams.emoji,
             color: trackerParams.color
         )
-        
+
+        storage.saveTracker(tracker: tracker, categoryTitle: category)
 //        guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
 //        storedCategories[index].trackers.append(tracker)
 //        storage.saveCategories(categories: storedCategories)

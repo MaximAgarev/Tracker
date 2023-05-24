@@ -7,7 +7,6 @@ protocol TrackersViewProtocol: AnyObject {
     func setTrackersCollection()
 }
 
-
 final class TrackersView: UIView, TrackersViewProtocol {
     
     weak var viewController: TrackersViewControllerProtocol?
@@ -164,6 +163,8 @@ extension TrackersView: UICollectionViewDataSource {
         let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
+#warning("Replace tags with trackerID")
+        cell.trackerID = trackerID
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
         cell.titleLabel.text = tracker?.title
         cell.emodjiLabel.text = tracker?.emoji
@@ -176,10 +177,13 @@ extension TrackersView: UICollectionViewDataSource {
     }
     
     func buttonIsChecked(trackerID: Int) -> Bool {
-        let trackerID = trackerID
         guard let currentDate = viewController?.currentDate else { return false }
-        let record = TrackerRecord(id: trackerID, date: currentDate)
-        guard let recordExists = viewController?.completedTrackers.contains(record) else { return false }
+        
+        guard let recordExists = viewController?.storage?.checkRecordExists(
+            trackerID: trackerID,
+            date: currentDate
+        ) else { return false }
+        
         return recordExists
     }
     
