@@ -143,7 +143,6 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     }
     
 // MARK: - Records
-
     func checkRecordExists(trackerID: Int, date: Date) -> Bool {
         recordStore.checkRecordExists(trackerID: trackerID, date: date)
     }

@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 
 final class TrackerRecordStore {
-    
     let storage = TrackerStorageCoreData.shared
     let recordRequest = TrackerRecordCD.fetchRequest()
     var context: NSManagedObjectContext
@@ -13,23 +12,23 @@ final class TrackerRecordStore {
     
     func checkRecordExists(trackerID: Int, date: Date) -> Bool {
         var recordsFromStorage: [TrackerRecordCD] = []
+        
         do {
             recordsFromStorage = try context.fetch(recordRequest)
         }
         catch {
             assertionFailure("Couln't load categories from CoreData")
         }
-
         let recordExists = recordsFromStorage.contains(where: { record in
             record.date == date.withoutTime() &&
             record.trackerID == trackerID
         })
-        
         return recordExists
     }
     
     func removeDeletedTrackerRecords(id: Int64) {
         recordRequest.predicate = NSPredicate(format: "trackerID == %d", id)
+        
         do {
             let recordsFromStorage = try context.fetch(recordRequest)
             recordsFromStorage.forEach { record in
@@ -71,6 +70,7 @@ final class TrackerRecordStore {
     
     func addRecordToCompleted(id: Int, date: Date) {
         recordRequest.predicate = NSPredicate(format: "trackerID == %d AND date == %@", Int64(id), date as CVarArg)
+        
         do {
             let recordFromStorage = try context.fetch(recordRequest)
             if recordFromStorage.isEmpty {

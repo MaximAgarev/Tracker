@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 
 final class TrackerCategoryStore {
-    
     let storage = TrackerStorageCoreData.shared
     let categoryRequest = TrackerCategoryCD.fetchRequest()
     var context: NSManagedObjectContext
@@ -46,8 +45,8 @@ final class TrackerCategoryStore {
     }
     
     func saveCategory(title: String) {
-        let category = TrackerCategoryCD(context: context)
-        category.title = title
+        let saveCategory = TrackerCategoryCD(context: context)
+        saveCategory.title = title
         do {
             try context.save()
         }
@@ -68,6 +67,7 @@ final class TrackerCategoryStore {
         catch {
             assertionFailure("Couln't save categories to CoreData")
         }
+        categoryRequest.predicate = nil
         storage.categoriesList = getCategoriesList()
     }
     

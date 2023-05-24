@@ -8,7 +8,6 @@ protocol TrackersViewProtocol: AnyObject {
 }
 
 final class TrackersView: UIView, TrackersViewProtocol {
-    
     weak var viewController: TrackersViewControllerProtocol?
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?

@@ -13,7 +13,7 @@
 		D02E3CB529F16CC300DFE26B /* EmptyCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */; };
 		D02E3CB729F1A05000DFE26B /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB629F1A05000DFE26B /* CategoriesView.swift */; };
 		D066164D2A064CC0004A3A7D /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D066164B2A064CC0004A3A7D /* Tracker.xcdatamodeld */; };
-		D066164F2A064DDB004A3A7D /* StorageCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D066164E2A064DDB004A3A7D /* StorageCoreData.swift */; };
+		D066164F2A064DDB004A3A7D /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D066164E2A064DDB004A3A7D /* DataProvider.swift */; };
 		D0840C732A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0840C722A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift */; };
 		D089E5D029DA267A005F9FAF /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5CF29DA267A005F9FAF /* StatisticsViewController.swift */; };
 		D089E5D229DA26E3005F9FAF /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D089E5D129DA26E3005F9FAF /* TabBarController.swift */; };
@@ -54,7 +54,7 @@
 		D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCategoriesView.swift; sourceTree = "<group>"; };
 		D02E3CB629F1A05000DFE26B /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		D066164C2A064CC0004A3A7D /* Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tracker.xcdatamodel; sourceTree = "<group>"; };
-		D066164E2A064DDB004A3A7D /* StorageCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCoreData.swift; sourceTree = "<group>"; };
+		D066164E2A064DDB004A3A7D /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		D0840C722A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiColorCollectionView.swift; sourceTree = "<group>"; };
 		D089E5CF29DA267A005F9FAF /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		D089E5D129DA26E3005F9FAF /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 		D01AEB002A152FBE00CD9D83 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				D066164E2A064DDB004A3A7D /* StorageCoreData.swift */,
+				D066164E2A064DDB004A3A7D /* DataProvider.swift */,
 				D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */,
 				D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */,
 				D01AEB052A1781AF00CD9D83 /* TrackerRecordStore.swift */,
@@ -354,7 +354,7 @@
 				D089E5F329DF6AB8005F9FAF /* ChoiceViewController.swift in Sources */,
 				D089E5D229DA26E3005F9FAF /* TabBarController.swift in Sources */,
 				D089E5DB29DC4AE0005F9FAF /* TrackersView.swift in Sources */,
-				D066164F2A064DDB004A3A7D /* StorageCoreData.swift in Sources */,
+				D066164F2A064DDB004A3A7D /* DataProvider.swift in Sources */,
 				D0F9C41929DA11E6009C7686 /* TrackersViewController.swift in Sources */,
 				D0ACD29829FEF63B000FB7F3 /* Int+Extensions.swift in Sources */,
 				D0CACCC829F4214100BD9D91 /* ScheduleView.swift in Sources */,

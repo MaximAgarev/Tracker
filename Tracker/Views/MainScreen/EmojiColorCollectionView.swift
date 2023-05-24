@@ -7,5 +7,4 @@ class EmojiColorCollectionView: UICollectionView {
     }
     
     var collectionType: collectionType = .emoji
-    
 }
