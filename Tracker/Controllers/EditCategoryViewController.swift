@@ -2,7 +2,7 @@ import UIKit
 
 final class EditCategoryViewController: UIViewController {
     
-    var delegate: CategoriesViewControllerProtocol?
+    weak var delegate: CategoriesViewControllerProtocol?
     var isNew: Bool = true
     var editTitle: String?
     

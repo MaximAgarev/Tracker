@@ -35,7 +35,6 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     func didTapCreateButton(){
         storage = TrackerStorageCoreData.shared
         guard let storage = storage else { return }
-//        storage.fetchTrackers(date: nil, searchText: nil)
         
         let tracker = Tracker(
             id: storage.trackerID(),
@@ -46,9 +45,6 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
         )
 
         storage.saveTracker(tracker: tracker, categoryTitle: category)
-//        guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
-//        storedCategories[index].trackers.append(tracker)
-//        storage.saveCategories(categories: storedCategories)
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)

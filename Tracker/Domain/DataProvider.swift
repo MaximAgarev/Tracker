@@ -2,8 +2,6 @@ import UIKit
 import CoreData
 
 protocol TrackerStorageProtocol {
-    var delegate: AnyObject? { get set }
-    
     var categoriesList: [String] { get set }
     var numberOfSections: Int { get }
     
@@ -27,9 +25,7 @@ protocol TrackerStorageProtocol {
 final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     static let shared = TrackerStorageCoreData()
     private override init() {}
-    
-    weak var delegate: AnyObject?
-    
+        
     lazy var trackerStore = TrackerStore()
     lazy var categoryStore = TrackerCategoryStore()
     lazy var recordStore = TrackerRecordStore()
@@ -61,13 +57,14 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
             NSSortDescriptor(key: "category", ascending: true),
             NSSortDescriptor(key: "title", ascending: true)
         ]
+        
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: "category",
             cacheName: nil)
         fetchedResultController.delegate = self
-        try? fetchedResultController.performFetch()
+        
         return fetchedResultController
     }()
     
@@ -114,6 +111,7 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     func saveTracker(tracker: Tracker, categoryTitle: String) {
         let categoryCD = TrackerCategoryStore().getCategory(of: categoryTitle)
         trackerStore.saveTracker(tracker: tracker, category: categoryCD)
+        try? fetchedResultsController.performFetch()
     }
 
 // MARK: - Categories
@@ -132,14 +130,17 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     
     func saveCategory(title: String) {
         categoryStore.saveCategory(title: title)
+        try? fetchedResultsController.performFetch()
     }
     
     func updateCategory(editTitle: String, newTitle: String) {
         categoryStore.updateCategory(editTitle: editTitle, newTitle: newTitle)
+        try? fetchedResultsController.performFetch()
     }
     
     func deleteCategory(categoryTitle: String) {
         categoryStore.deleteCategory(categoryTitle: categoryTitle)
+        try? fetchedResultsController.performFetch()
     }
     
 // MARK: - Records
@@ -153,6 +154,7 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     
     func saveCompletedTrackers(completedTrackers: Set<TrackerRecord>) {
         recordStore.saveCompletedTrackers(completedTrackers: completedTrackers)
+        try? fetchedResultsController.performFetch()
     }
 }
 

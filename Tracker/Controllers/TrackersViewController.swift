@@ -34,7 +34,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.trackersView = trackersView
 
         storage = TrackerStorageCoreData.shared
-        storage?.delegate = self
         
         NotificationCenter.default.addObserver(
             self,

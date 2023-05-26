@@ -12,7 +12,7 @@ protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
 
 final class CategoriesViewController: UIViewController, CategoriesViewControllerProtocol {
     var storage: TrackerStorageProtocol?
-    var delegate: NewTrackerViewController?
+    weak var delegate: NewTrackerViewController?
     
     var selectedCategory: String?
     
