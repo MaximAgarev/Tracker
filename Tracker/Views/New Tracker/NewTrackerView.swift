@@ -79,12 +79,12 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return emojiLabel
     }()
 
-    private lazy var emojiCollection: UICollectionView = {
-        let emojiCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var emojiCollection: EmojiColorCollectionView = {
+        let emojiCollection = EmojiColorCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         emojiCollection.translatesAutoresizingMaskIntoConstraints = false
         emojiCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "CollectionCell")
         emojiCollection.allowsMultipleSelection = false
-        emojiCollection.tag = 1
+        emojiCollection.collectionType = .emoji
         emojiCollection.dataSource = viewController
         emojiCollection.delegate = viewController
         return emojiCollection
@@ -99,11 +99,12 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return colorLabel
     }()
     
-    private lazy var colorCollection: UICollectionView = {
-        let colorCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var colorCollection: EmojiColorCollectionView = {
+        let colorCollection = EmojiColorCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         colorCollection.translatesAutoresizingMaskIntoConstraints = false
         colorCollection.register(CollectionCell.self, forCellWithReuseIdentifier: "CollectionCell")
         colorCollection.allowsMultipleSelection = false
+        colorCollection.collectionType = .color
         colorCollection.dataSource = viewController
         colorCollection.delegate = viewController
         return colorCollection

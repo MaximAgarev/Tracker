@@ -2,6 +2,8 @@ import UIKit
 
 final class TrackersCell: UICollectionViewCell {
     
+    var trackerID: Int = 0
+    
     let colorCard: UIView = UIView()
     let emodjiLabel: UILabel = UILabel()
     let titleLabel: UILabel = UILabel()

@@ -2,7 +2,7 @@ import UIKit
 
 final class EditCategoryViewController: UIViewController {
     
-    var delegate: CategoriesViewControllerProtocol?
+    weak var delegate: CategoriesViewControllerProtocol?
     var isNew: Bool = true
     var editTitle: String?
     
@@ -81,20 +81,20 @@ final class EditCategoryViewController: UIViewController {
     
     @objc
     func didTapAddCategoryButton(){
-        let storage = TrackerStorage.shared
-        var storedCategories = storage.loadCategories()
+        let storage = TrackerStorageCoreData.shared
+        storage.fetchTrackers(date: nil, searchText: nil)
         guard let title = categoryNameTextField.text,
-              title != "" else { return }
-        for category in storedCategories {
-            if category.title == title { return }
-        }
+              title != "",
+              !storage.checkCategoryExists(title: title) else { return }
         if isNew {
-            storedCategories.append(TrackerCategory(title: title, trackers: []))
+            storage.saveCategory(title: title)
         } else {
-            guard let index = storedCategories.firstIndex(where: { $0.title == editTitle }) else { return }
-            storedCategories[index].title = title
+            if let editTitle = editTitle {
+                storage.updateCategory(editTitle: editTitle, newTitle: title)
+            }
         }
-        storage.saveCategories(categories: storedCategories)
+        delegate?.setView()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
         dismiss(animated: true)
     }
 }

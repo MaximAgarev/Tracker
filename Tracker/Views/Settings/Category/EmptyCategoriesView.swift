@@ -36,7 +36,7 @@ final class EmptyCategoriesView: UIView, CategoriesViewProtocol {
         return addCategoryButton
     }()
     
-    // MARK: -
+// MARK: -
     init(frame: CGRect, viewController: CategoriesViewControllerProtocol) {
         super.init(frame: frame)
         self.viewController = viewController

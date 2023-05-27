@@ -5,7 +5,7 @@ protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
     
-    var category: TrackerCategory { get set }
+    var category: String { get set } //TrackerCategory { get set }
     var trackerParams: TrackerParams { get set }
         
     func didTapCreateButton()
@@ -17,7 +17,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     var newTrackerView: NewTrackerViewProtocol?
     var isHabit: Bool = true
     
-    var category: TrackerCategory = TrackerCategory(title: "", trackers: [])
+    var category: String = "" //TrackerCategory = TrackerCategory(title: "", trackers: [])
     var trackerParams: TrackerParams = TrackerParams(id: 0, title: "", schedule: "", emoji: "", color: 0)
     
     override func viewDidLoad() {
@@ -33,9 +33,8 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     }
         
     func didTapCreateButton(){
-        storage = TrackerStorage.shared
+        storage = TrackerStorageCoreData.shared
         guard let storage = storage else { return }
-        var storedCategories = storage.loadCategories()
         
         let tracker = Tracker(
             id: storage.trackerID(),
@@ -44,16 +43,15 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
             emoji: trackerParams.emoji,
             color: trackerParams.color
         )
-        guard let index = storedCategories.firstIndex(where: { $0.title == category.title }) else { return }
-        storedCategories[index].trackers.append(tracker)
-        storage.saveCategories(categories: storedCategories)
+
+        storage.saveTracker(tracker: tracker, categoryTitle: category)
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
-        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     func didTapCancelButton(){
-        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
 }
@@ -117,10 +115,11 @@ extension NewTrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as? CollectionCell
         guard let cell = cell else { return CollectionCell() }
-        cell.layer.cornerRadius = 16
+        cell.layer.cornerRadius = 14
         cell.layer.masksToBounds = true
         
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell.titleLabel.text = emojies[indexPath.row]
         } else {
             cell.titleLabel.backgroundColor = .ypColorSelection[indexPath.row]
@@ -152,15 +151,17 @@ extension NewTrackerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.view.endEditing(true)
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell?.backgroundColor = .ypLightGray
             trackerParams.emoji = cell?.titleLabel.text ?? ""
             newTrackerView?.createButtonAvailability(element: "emoji", state: true)
         } else {
             cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = CGColor(red: 0.9, green: 0.91, blue: 0.92, alpha: 1)
             if let color = cell?.titleLabel.backgroundColor {
                 trackerParams.color = UIColor.ypColorSelection.firstIndex(of: color) ?? 0
+                let borderColor = color.withAlphaComponent(0.3)
+                cell?.layer.borderColor = borderColor.cgColor
             }
             newTrackerView?.createButtonAvailability(element: "color", state: true)
         }
@@ -168,7 +169,8 @@ extension NewTrackerViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? CollectionCell
-        if collectionView.tag == 1 {
+        let view = collectionView as? EmojiColorCollectionView
+        if view?.collectionType == .emoji {
             cell?.backgroundColor = .ypWhite
         } else {
             cell?.layer.borderWidth = 3

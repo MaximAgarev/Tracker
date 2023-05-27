@@ -3,7 +3,6 @@ import UIKit
 protocol ChoiceViewControllerProtocol: AnyObject {
     var choiceView: ChoiceViewProtocol? { get set }
     func presentNewTrackerViewController(isHabit: Bool)
-    func didTapEventButton()
 }
 
 final class ChoiceViewController: UIViewController, ChoiceViewControllerProtocol {
@@ -21,9 +20,5 @@ final class ChoiceViewController: UIViewController, ChoiceViewControllerProtocol
         newTrackerViewController.isHabit = isHabit
         newTrackerViewController.modalPresentationStyle = .popover
         self.present(newTrackerViewController, animated: true)
-    }
-    
-    func didTapEventButton(){
-        print("Event!")
     }
 }

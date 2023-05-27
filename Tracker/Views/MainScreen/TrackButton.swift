@@ -1,6 +1,8 @@
 import UIKit
 
 final class TrackButton: UIButton {
+    var trackerID: Int?
+    
     var isChecked: Bool = false {
         didSet {
             let imageName = self.isChecked ? "Track Button Check Image" : "Track Button Plus Image"

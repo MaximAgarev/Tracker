@@ -2,8 +2,8 @@ import UIKit
 
 protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITableViewDataSource {
     var storage: TrackerStorageProtocol? { get set }
-    var categoriesView: CategoriesViewProtocol? { get set }
     var delegate: NewTrackerViewController? { get set }
+    
     var selectedCategory: String? { get set }
     
     func setView()
@@ -12,10 +12,8 @@ protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
 
 final class CategoriesViewController: UIViewController, CategoriesViewControllerProtocol {
     var storage: TrackerStorageProtocol?
-    var categoriesView: CategoriesViewProtocol?
-    var delegate: NewTrackerViewController?
+    weak var delegate: NewTrackerViewController?
     
-    var storedCategories: [TrackerCategory] = []
     var selectedCategory: String?
     
     private lazy var headerLabel: UILabel = {
@@ -29,21 +27,18 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        storage = TrackerStorage.shared
-        guard let storage = storage else { return }
-        storedCategories = storage.loadCategories()
+        storage = TrackerStorageCoreData.shared
+
         setView()
     }
     
     func setView() {
         guard let storage = storage else { return }
-        storedCategories = storage.loadCategories()
-        if storedCategories.count == 0 {
+        if storage.categoriesList.count == 0 {
             self.view = EmptyCategoriesView(frame: .zero, viewController: self)
         } else {
             self.view = CategoriesView(frame: .zero, viewController: self)
         }
-        addHeaderLabel()
     }
 
     private func addHeaderLabel() {
@@ -62,7 +57,7 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
 
 extension CategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storedCategories.count
+        return storage?.categoriesList.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,7 +65,7 @@ extension CategoriesViewController: UITableViewDataSource {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
         }
-        cell.textLabel?.text = storedCategories[indexPath.row].title
+        cell.textLabel?.text = storage?.categoriesList[indexPath.row]
         cell.accessoryType = cell.textLabel?.text == selectedCategory ? .checkmark : .none
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .none
@@ -87,7 +82,7 @@ extension CategoriesViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath)
         let value = cell?.textLabel?.text ?? ""
         delegate?.newTrackerView?.updateCategoryCell(value: value, isCategory: true)
-        delegate?.category.title = value
+        delegate?.category = value
         dismiss(animated: true)
     }
     
@@ -113,8 +108,6 @@ extension CategoriesViewController: UITableViewDelegate {
                         preferredStyle: .actionSheet)
                     let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
                         self?.storage?.deleteCategory(categoryTitle: title ?? "")
-                        guard let storage = self?.storage else { return }
-                        self?.storedCategories = storage.loadCategories()
                         self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                         self?.setView()
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)

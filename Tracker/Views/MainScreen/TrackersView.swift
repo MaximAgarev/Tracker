@@ -7,9 +7,7 @@ protocol TrackersViewProtocol: AnyObject {
     func setTrackersCollection()
 }
 
-
 final class TrackersView: UIView, TrackersViewProtocol {
-    
     weak var viewController: TrackersViewControllerProtocol?
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
@@ -109,10 +107,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
         emptyLabel.removeFromSuperview()
         emptyImageView.removeFromSuperview()
         collectionView.removeFromSuperview()
-        
-        guard let isEmpty = viewController?.visibleCategories.isEmpty else { return }
-        
-        if isEmpty {
+                
+        if viewController?.storage?.numberOfSections == 0 {
             showEmptyTab()
             return
         }
@@ -154,26 +150,24 @@ final class TrackersView: UIView, TrackersViewProtocol {
 //MARK: - Extensions
 extension TrackersView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let viewController = viewController else { return 0 }
-        return viewController.visibleCategories.count
+        return viewController?.storage?.numberOfSections ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let viewController = viewController else { return 0 }
-        let trackers = viewController.visibleCategories[section].trackers
-        return trackers.count
+        return viewController?.storage?.numberOfRowsInSection(section) ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as! TrackersCell
-        let tracker = viewController?.visibleCategories[indexPath.section].trackers[indexPath.row]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackersCell else { return UICollectionViewCell() }
+        let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
+        cell.trackerID = trackerID
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
         cell.titleLabel.text = tracker?.title
         cell.emodjiLabel.text = tracker?.emoji
         cell.daysCountLabel.text = daysCompleted(trackerID: trackerID).days()
-        cell.trackButton.tag = trackerID
+        cell.trackButton.trackerID = trackerID
         cell.trackButton.isChecked = buttonIsChecked(trackerID: trackerID)
         cell.trackButton.addTarget(self, action: #selector(trackButtonDidTap(sender:)), for: .touchUpInside)
         cell.trackButton.tintColor = UIColor.ypColorSelection[tracker?.color ?? 0]
@@ -181,10 +175,13 @@ extension TrackersView: UICollectionViewDataSource {
     }
     
     func buttonIsChecked(trackerID: Int) -> Bool {
-        let trackerID = trackerID
         guard let currentDate = viewController?.currentDate else { return false }
-        let record = TrackerRecord(id: trackerID, date: currentDate)
-        guard let recordExists = viewController?.completedTrackers.contains(record) else { return false }
+        
+        guard let recordExists = viewController?.storage?.checkRecordExists(
+            trackerID: trackerID,
+            date: currentDate
+        ) else { return false }
+        
         return recordExists
     }
     
@@ -198,16 +195,16 @@ extension TrackersView: UICollectionViewDataSource {
         guard let currentDate = viewController?.currentDate.withoutTime() else { return }
         if  currentDate > Date().withoutTime() { return }
         
-        let buttonTapped = sender as! TrackButton
-        let trackerID = buttonTapped.tag
-        buttonTapped.isChecked.toggle()
+        let buttonTapped = sender as? TrackButton
+        guard let trackerID = buttonTapped?.trackerID else { return }
+        buttonTapped?.isChecked.toggle()
         viewController?.trackButtonDidTap(trackerID: trackerID)
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "categoryHeader", for: indexPath) as? TrackersHeader
         guard let header = header else { return TrackersHeader() }
-        header.titleLabel.text = viewController?.visibleCategories[indexPath.section].title
+        header.titleLabel.text = viewController?.storage?.getCategoryTitle(section: indexPath.section)
         return header
     }
         

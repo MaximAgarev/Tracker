@@ -10,7 +10,7 @@ protocol ScheduleViewControllerProtocol: AnyObject, UITableViewDelegate, UITable
 
 final class ScheduleViewController: UIViewController, ScheduleViewControllerProtocol {
     var scheduleView: ScheduleViewProtocol?
-    var delegate: NewTrackerViewController?
+    weak var delegate: NewTrackerViewController?
     var selectedSchedule: String?
     
     var chosenDays: [String] = []
