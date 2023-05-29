@@ -84,14 +84,15 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func firstLaunchOnboarding() {
-        if UserDefaults.standard.bool(forKey: "Onboarding Passed") {
+        let onboardingKey = "isOnboarded"
+        if !UserDefaults.standard.bool(forKey: onboardingKey) {
             let onboardingViewController = OnboardingViewController(
                 transitionStyle: .scroll,
                 navigationOrientation: .horizontal,
                 options: nil)
             onboardingViewController.modalPresentationStyle = .fullScreen
             self.present(onboardingViewController, animated: false)
-            UserDefaults.standard.set(true, forKey: "Onboarding Passed")
+            UserDefaults.standard.set(true, forKey: onboardingKey)
         }
     }
 }

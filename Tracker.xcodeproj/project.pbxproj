@@ -13,7 +13,7 @@
 		D02E3CB529F16CC300DFE26B /* EmptyCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */; };
 		D02E3CB729F1A05000DFE26B /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02E3CB629F1A05000DFE26B /* CategoriesView.swift */; };
 		D05991C92A239EE80078BC78 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05991C82A239EE80078BC78 /* OnboardingViewController.swift */; };
-		D05991CB2A239F750078BC78 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05991CA2A239F750078BC78 /* OnboardingPageViewController.swift */; };
+		D05991CE2A24AC5D0078BC78 /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05991CD2A24AC5D0078BC78 /* CategoriesViewModel.swift */; };
 		D066164D2A064CC0004A3A7D /* Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D066164B2A064CC0004A3A7D /* Tracker.xcdatamodeld */; };
 		D066164F2A064DDB004A3A7D /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D066164E2A064DDB004A3A7D /* DataProvider.swift */; };
 		D0840C732A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0840C722A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift */; };
@@ -56,7 +56,7 @@
 		D02E3CB429F16CC300DFE26B /* EmptyCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCategoriesView.swift; sourceTree = "<group>"; };
 		D02E3CB629F1A05000DFE26B /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		D05991C82A239EE80078BC78 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
-		D05991CA2A239F750078BC78 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
+		D05991CD2A24AC5D0078BC78 /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		D066164C2A064CC0004A3A7D /* Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tracker.xcdatamodel; sourceTree = "<group>"; };
 		D066164E2A064DDB004A3A7D /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		D0840C722A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiColorCollectionView.swift; sourceTree = "<group>"; };
@@ -114,6 +114,14 @@
 				D01AEB052A1781AF00CD9D83 /* TrackerRecordStore.swift */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		D05991CC2A24AC3A0078BC78 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				D05991CD2A24AC5D0078BC78 /* CategoriesViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		D089E5D329DA2B6F005F9FAF /* Helpers */ = {
@@ -181,7 +189,6 @@
 				D0CACCC529F4211400BD9D91 /* ScheduleViewController.swift */,
 				D089E5CF29DA267A005F9FAF /* StatisticsViewController.swift */,
 				D05991C82A239EE80078BC78 /* OnboardingViewController.swift */,
-				D05991CA2A239F750078BC78 /* OnboardingPageViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -267,6 +274,7 @@
 		D0F9C41329DA11E6009C7686 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				D05991CC2A24AC3A0078BC78 /* ViewModels */,
 				D01AEB002A152FBE00CD9D83 /* Domain */,
 				D0ACD29029F9458A000FB7F3 /* Views */,
 				D0ACD28F29F94536000FB7F3 /* Controllers */,
@@ -371,7 +379,6 @@
 				D0F9C41529DA11E6009C7686 /* AppDelegate.swift in Sources */,
 				D01AEB022A1633ED00CD9D83 /* TrackerStore.swift in Sources */,
 				D0CACCD029F580F400BD9D91 /* Storage.swift in Sources */,
-				D05991CB2A239F750078BC78 /* OnboardingPageViewController.swift in Sources */,
 				D089E5F729DF6DC0005F9FAF /* ChoiceView.swift in Sources */,
 				D0CACCCC29F5509600BD9D91 /* EditCategoryViewController.swift in Sources */,
 				D0CACCCA29F5451E00BD9D91 /* Weekdays.swift in Sources */,
@@ -388,6 +395,7 @@
 				D089E5D029DA267A005F9FAF /* StatisticsViewController.swift in Sources */,
 				D0FF0D5329E4898200837748 /* CollectionCell.swift in Sources */,
 				D02E3CB529F16CC300DFE26B /* EmptyCategoriesView.swift in Sources */,
+				D05991CE2A24AC5D0078BC78 /* CategoriesViewModel.swift in Sources */,
 				D089E5E329DD86DA005F9FAF /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
