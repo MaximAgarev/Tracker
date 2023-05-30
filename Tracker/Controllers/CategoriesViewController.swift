@@ -1,9 +1,8 @@
 import UIKit
 
 protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITableViewDataSource {
-    var storage: TrackerStorageProtocol? { get set }
     var delegate: NewTrackerViewController? { get set }
-    
+    var viewModel: CategoriesViewModel? { get set }
     var selectedCategory: String? { get set }
     
     func setView()
@@ -11,8 +10,9 @@ protocol CategoriesViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
 }
 
 final class CategoriesViewController: UIViewController, CategoriesViewControllerProtocol {
-    var storage: TrackerStorageProtocol?
     weak var delegate: NewTrackerViewController?
+    
+    var viewModel: CategoriesViewModel?
     
     var selectedCategory: String?
     
@@ -27,14 +27,15 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        storage = TrackerStorageCoreData.shared
+        viewModel = CategoriesViewModel()
+        viewModel?.onChange = setView
 
         setView()
     }
     
     func setView() {
-        guard let storage = storage else { return }
-        if storage.categoriesList.count == 0 {
+        guard let viewModel = viewModel else { return }
+        if viewModel.categories.count == 0 {
             self.view = EmptyCategoriesView(frame: .zero, viewController: self)
         } else {
             self.view = CategoriesView(frame: .zero, viewController: self)
@@ -51,13 +52,18 @@ final class CategoriesViewController: UIViewController, CategoriesViewController
     }
     
     func didTapAddCategoryButton() {
-        presentEditCategoryViewController(isNew: true, editTitle: nil)
+        guard let viewModel = viewModel else { return }
+        presentEditCategoryViewController(
+            viewModel: viewModel,
+            isNew: true,
+            editTitle: nil
+        )
     }
 }
 
 extension CategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storage?.categoriesList.count ?? 0
+        return viewModel?.categories.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,7 +71,7 @@ extension CategoriesViewController: UITableViewDataSource {
         if indexPath.row == tableView.numberOfRows(inSection: 0) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
         }
-        cell.textLabel?.text = storage?.categoriesList[indexPath.row]
+        cell.textLabel?.text = viewModel?.categories[indexPath.row]
         cell.accessoryType = cell.textLabel?.text == selectedCategory ? .checkmark : .none
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .none
@@ -93,13 +99,17 @@ extension CategoriesViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        
+        guard let viewModel = viewModel else { return nil }
         return UIContextMenuConfiguration(actionProvider:  { actions in
             let cell = tableView.cellForRow(at: indexPath)
             let title = cell?.textLabel?.text
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { [weak self] _ in
-                    self?.presentEditCategoryViewController(isNew: false, editTitle: title)
+                    self?.presentEditCategoryViewController(
+                        viewModel: viewModel,
+                        isNew: false,
+                        editTitle: title
+                    )
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
                     let alert = UIAlertController(
@@ -107,7 +117,7 @@ extension CategoriesViewController: UITableViewDelegate {
                         message: "Эта категория точно не нужна?",
                         preferredStyle: .actionSheet)
                     let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
-                        self?.storage?.deleteCategory(categoryTitle: title ?? "")
+                        viewModel.deleteCategory(categoryTitle: title ?? "")
                         self?.delegate?.newTrackerView?.updateCategoryCell(value: nil, isCategory: true)
                         self?.setView()
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
@@ -121,8 +131,9 @@ extension CategoriesViewController: UITableViewDelegate {
         })
     }
     
-    func presentEditCategoryViewController(isNew: Bool, editTitle: String?) {
+    func presentEditCategoryViewController(viewModel: CategoriesViewModel, isNew: Bool, editTitle: String?) {
         let editCategoryViewController = EditCategoryViewController()
+        editCategoryViewController.viewModel = viewModel
         editCategoryViewController.isNew = isNew
         editCategoryViewController.editTitle = editTitle
         editCategoryViewController.delegate = self

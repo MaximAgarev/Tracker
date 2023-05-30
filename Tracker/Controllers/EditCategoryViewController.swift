@@ -3,6 +3,7 @@ import UIKit
 final class EditCategoryViewController: UIViewController {
     
     weak var delegate: CategoriesViewControllerProtocol?
+    var viewModel: CategoriesViewModel?
     var isNew: Bool = true
     var editTitle: String?
     
@@ -81,16 +82,15 @@ final class EditCategoryViewController: UIViewController {
     
     @objc
     func didTapAddCategoryButton(){
-        let storage = TrackerStorageCoreData.shared
-        storage.fetchTrackers(date: nil, searchText: nil)
         guard let title = categoryNameTextField.text,
+              let viewModel = viewModel,
               title != "",
-              !storage.checkCategoryExists(title: title) else { return }
+              !viewModel.checkCategoryExists(title: title) else { return }
         if isNew {
-            storage.saveCategory(title: title)
+            viewModel.saveCategory(title: title)
         } else {
             if let editTitle = editTitle {
-                storage.updateCategory(editTitle: editTitle, newTitle: title)
+                viewModel.updateCategory(editTitle: editTitle, newTitle: title)
             }
         }
         delegate?.setView()

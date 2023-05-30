@@ -55,7 +55,7 @@ final class CategoriesView: UIView, CategoriesViewProtocol {
         ])
         
         addSubview(categoriesTable)
-        let rowsCount = CGFloat(viewController?.storage?.categoriesList.count ?? 0)
+        let rowsCount = CGFloat(viewController?.viewModel?.categories.count ?? 0)
         let rowsHeight = categoriesTable.heightAnchor.constraint(equalToConstant: rowsCount * 75)
         rowsHeight.priority = UILayoutPriority(rawValue: 999)
         rowsHeight.isActive = true

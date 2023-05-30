@@ -24,6 +24,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        firstLaunchOnboarding()
+        
         guard let navigationController = navigationController else { return }
         let trackersView = TrackersView(frame: .zero,
                                         viewController: self,
@@ -79,5 +81,18 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         let newTrackerViewController = ChoiceViewController()
         newTrackerViewController.modalPresentationStyle = .popover
         self.present(newTrackerViewController, animated: true)
+    }
+    
+    func firstLaunchOnboarding() {
+        let onboardingKey = "isOnboarded"
+        if !UserDefaults.standard.bool(forKey: onboardingKey) {
+            let onboardingViewController = OnboardingViewController(
+                transitionStyle: .scroll,
+                navigationOrientation: .horizontal,
+                options: nil)
+            onboardingViewController.modalPresentationStyle = .fullScreen
+            self.present(onboardingViewController, animated: false)
+            UserDefaults.standard.set(true, forKey: onboardingKey)
+        }
     }
 }
