@@ -1,7 +1,7 @@
 import UIKit
 
 final class OnboardingViewController: UIPageViewController {
-    lazy var pages: [UIViewController] = {
+    private lazy var pages: [UIViewController] = {
         
         let blueOnboardingScreen = makeOnboardingPage(
             image: "OnboardingBlue",
@@ -16,7 +16,7 @@ final class OnboardingViewController: UIPageViewController {
         return [blueOnboardingScreen, redOnboardingScreen]
     }()
     
-    lazy var pageControl: UIPageControl = {
+    private lazy var pageControl: UIPageControl = {
             let pageControl = UIPageControl()
             pageControl.numberOfPages = pages.count
             pageControl.currentPage = 0
@@ -27,6 +27,19 @@ final class OnboardingViewController: UIPageViewController {
             pageControl.translatesAutoresizingMaskIntoConstraints = false
             return pageControl
         }()
+    
+    private lazy var dismissButton: UIButton = {
+        let dismissButton = UIButton()
+        dismissButton.addTarget(self, action: #selector(didTapDismissButton), for: .touchUpInside)
+        dismissButton.layer.cornerRadius = 16
+        dismissButton.layer.masksToBounds = true
+        dismissButton.backgroundColor = .ypBlack
+        dismissButton.setTitle("Вот это технологии!", for: .normal)
+        dismissButton.setTitleColor(.ypWhite, for: .normal)
+        dismissButton.titleLabel?.font = .systemFont(ofSize: 16)
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
+        return dismissButton
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,10 +52,15 @@ final class OnboardingViewController: UIPageViewController {
         }
         
         view.addSubview(pageControl)
+        view.addSubview(dismissButton)
                 
                 NSLayoutConstraint.activate([
                     pageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -168),
-                    pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+                    pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -84),
+                    dismissButton.heightAnchor.constraint(equalToConstant: 60),
+                    dismissButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                    dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
                 ])
     }
     
@@ -67,19 +85,6 @@ final class OnboardingViewController: UIPageViewController {
             return textLabel
         }()
         
-        let dismissButton: UIButton = {
-            let dismissButton = UIButton()
-            dismissButton.addTarget(self, action: #selector(didTapDismissButton), for: .touchUpInside)
-            dismissButton.layer.cornerRadius = 16
-            dismissButton.layer.masksToBounds = true
-            dismissButton.backgroundColor = .ypBlack
-            dismissButton.setTitle("Вот это технологии!", for: .normal)
-            dismissButton.setTitleColor(.ypWhite, for: .normal)
-            dismissButton.titleLabel?.font = .systemFont(ofSize: 16)
-            dismissButton.translatesAutoresizingMaskIntoConstraints = false
-            return dismissButton
-        }()
-        
         guard let view = onboardingPage.view else { return UIViewController() }
         
         view.addSubview(backgroundImageView)
@@ -93,11 +98,7 @@ final class OnboardingViewController: UIPageViewController {
             backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 432),
             textLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            dismissButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -84),
-            dismissButton.heightAnchor.constraint(equalToConstant: 60),
-            dismissButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            textLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
          return onboardingPage
     }

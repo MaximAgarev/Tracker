@@ -91,7 +91,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
                 navigationOrientation: .horizontal,
                 options: nil)
             onboardingViewController.modalPresentationStyle = .fullScreen
-            self.present(onboardingViewController, animated: false)
+            self.view.window?.rootViewController?.present(onboardingViewController, animated: false)
             UserDefaults.standard.set(true, forKey: onboardingKey)
         }
     }
