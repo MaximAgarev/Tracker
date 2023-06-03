@@ -198,8 +198,9 @@
 			children = (
 				D089E5F529DF6B34005F9FAF /* MainScreen */,
 				D0F1B6F329E04F3300471968 /* New Tracker */,
+				D0CACCC329F420AE00BD9D91 /* Category */,
+				D0CACCC429F420D300BD9D91 /* Schedule */,
 				D0F1B6F229E04F1D00471968 /* Type */,
-				D0EEE2E729EDBED30021576D /* Settings */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -227,15 +228,6 @@
 				D0CACCCF29F580F400BD9D91 /* Storage.swift */,
 			);
 			path = Storage;
-			sourceTree = "<group>";
-		};
-		D0EEE2E729EDBED30021576D /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				D0CACCC329F420AE00BD9D91 /* Category */,
-				D0CACCC429F420D300BD9D91 /* Schedule */,
-			);
-			path = Settings;
 			sourceTree = "<group>";
 		};
 		D0F1B6F229E04F1D00471968 /* Type */ = {

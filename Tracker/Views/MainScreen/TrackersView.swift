@@ -235,6 +235,52 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+        let indexPath = indexPaths[0]
+        let identifier = ["section": indexPath.section, "row": indexPath.row]
+        
+        return UIContextMenuConfiguration(
+            identifier: identifier as NSCopying, previewProvider: nil) { _ in
+                return UIMenu(children: [
+                    UIAction(title: "Закрепить") { [weak self] _ in
+#warning("remove")
+                        print("Pin")
+                    },
+                    
+                    UIAction(title: "Редактировать") { [weak self] _ in
+#warning("remove")
+                        print("Edit")
+                    },
+                    UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
+                        let alert = UIAlertController(
+                            title: nil,
+                            message: "Уверены что хотите удалить трекер?",
+                            preferredStyle: .actionSheet)
+                        let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
+#warning("remove")
+                            print("Delete")
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
+                        }
+                        let cancel = UIAlertAction(title: "Отмена", style: .cancel)
+                        alert.addAction(action)
+                        alert.addAction(cancel)
+                        let viewController = self?.viewController as? UIViewController
+                        viewController?.present(alert, animated: true)
+                    })
+                ])
+            }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let identifier = configuration.identifier as? Dictionary<String, Int>,
+              let row = identifier["row"],
+              let section = identifier["section"],
+              let cell = collectionView.cellForItem(at: IndexPath(row: row, section: section)) as? TrackersCell
+        else { return nil }
+        return UITargetedPreview(view: cell.colorCard)
+    }
 }
 
 extension TrackersView: UISearchBarDelegate {
