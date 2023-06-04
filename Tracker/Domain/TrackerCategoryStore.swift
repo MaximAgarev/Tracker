@@ -8,6 +8,8 @@ final class TrackerCategoryStore {
     
     init() {
         context = storage.context
+        _ = getPinnedCategory()
+        try? context.save()
     }
     
     func getCategory(of title: String) -> TrackerCategoryCD {
@@ -25,9 +27,22 @@ final class TrackerCategoryStore {
         var categoriesList: [String] = []
         let categories = try? context.fetch(categoryRequest)
         categories?.forEach({ category in
-            categoriesList.append(category.title ?? "")
+            if category.title != "Закрепленные" {
+                categoriesList.append(category.title ?? "")
+            }
         })
         return categoriesList
+    }
+    
+    func getPinnedCategory() -> TrackerCategoryCD {
+        categoryRequest.predicate = NSPredicate(format: "title == %@", "Закрепленные")
+        var categoryCD = try? context.fetch(categoryRequest).first
+        categoryRequest.predicate = nil
+        if categoryCD == nil {
+            categoryCD = TrackerCategoryCD(context: context)
+            categoryCD?.title = "Закрепленные"
+        }
+        return categoryCD ?? TrackerCategoryCD()
     }
     
     func checkCategoryExists(title: String) -> Bool {

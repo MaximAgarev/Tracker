@@ -10,7 +10,11 @@ protocol TrackersViewControllerProtocol: AnyObject {
     func setView()
     func searchTrackers(text: String)
     func trackButtonDidTap(trackerID: Int)
-    func presentNewTrackerViewController()
+    func presentChoiceViewController()
+    func presentEditTrackerViewController(tracker: Tracker)
+    func checkPinStatus(indexPath: IndexPath) -> Bool
+    func pinTracker(indexPath: IndexPath)
+    func deleteTracker(indexPath: IndexPath)
 }
 
 final class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
@@ -77,10 +81,15 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         setView()
     }
     
-    func presentNewTrackerViewController() {
-        let newTrackerViewController = ChoiceViewController()
-        newTrackerViewController.modalPresentationStyle = .popover
-        self.present(newTrackerViewController, animated: true)
+    func presentChoiceViewController() {
+        let choiceViewController = ChoiceViewController()
+        choiceViewController.modalPresentationStyle = .popover
+        self.present(choiceViewController, animated: true)
+    }
+    
+    func presentEditTrackerViewController(tracker: Tracker) {
+        let editTrackerViewController = NewTrackerViewController()
+        self.present(editTrackerViewController, animated: true)
     }
     
     func firstLaunchOnboarding() {
@@ -94,5 +103,19 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
             self.view.window?.rootViewController?.present(onboardingViewController, animated: false)
             UserDefaults.standard.set(true, forKey: onboardingKey)
         }
+    }
+    
+    func checkPinStatus(indexPath: IndexPath) -> Bool {
+        return storage?.checkPinStatus(section: indexPath.section, row: indexPath.row) ?? false
+    }
+    
+    func pinTracker(indexPath: IndexPath) {
+        storage?.pinTracker(section: indexPath.section, row: indexPath.row)
+        setView()
+    }
+    
+    func deleteTracker(indexPath: IndexPath) {
+        storage?.deleteTracker(section: indexPath.section, row: indexPath.row)
+        setView()
     }
 }

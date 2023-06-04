@@ -7,8 +7,11 @@ protocol TrackerStorageProtocol {
     
     func fetchTrackers(date: Date?, searchText: String?)
     func trackerID() -> Int
-    func getTracker(section: Int, index: Int) -> Tracker?
+    func getTracker(section: Int, row: Int) -> Tracker?
     func saveTracker(tracker: Tracker, categoryTitle: String)
+    func checkPinStatus(section: Int, row: Int) -> Bool
+    func pinTracker(section: Int, row: Int)
+    func deleteTracker(section: Int, row: Int)
     
     func numberOfRowsInSection(_ section: Int) -> Int
     func getCategoryTitle(section: Int) -> String
@@ -103,8 +106,8 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
         trackerStore.trackerID()
     }
     
-    func getTracker(section: Int, index: Int) -> Tracker? {
-        guard let tracker = fetchedResultsController.sections?[section].objects?[index] as? TrackerCD else { return nil }
+    func getTracker(section: Int, row: Int) -> Tracker? {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return nil }
         return trackerStore.getTracker(tracker)
     }
     
@@ -112,6 +115,21 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
         let categoryCD = TrackerCategoryStore().getCategory(of: categoryTitle)
         trackerStore.saveTracker(tracker: tracker, category: categoryCD)
         try? fetchedResultsController.performFetch()
+    }
+    
+    func checkPinStatus(section: Int, row: Int) -> Bool {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return false }
+        return tracker.pinnedFrom != nil
+    }
+    
+    func pinTracker(section: Int, row: Int) {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return }
+        trackerStore.pinTracker(trackerCD: tracker)
+    }
+    
+    func deleteTracker(section: Int, row: Int) {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return }
+        trackerStore.deleteTracker(trackerCD: tracker)
     }
 
 // MARK: - Categories

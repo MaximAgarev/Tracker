@@ -92,7 +92,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func didTapAddTracker() {
-        viewController?.presentNewTrackerViewController()
+        viewController?.presentChoiceViewController()
     }
     
     @objc
@@ -159,7 +159,7 @@ extension TrackersView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackersCell else { return UICollectionViewCell() }
-        let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
+        let tracker = viewController?.storage?.getTracker(section: indexPath.section, row: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
         cell.trackerID = trackerID
@@ -240,18 +240,23 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
         guard indexPaths.count > 0 else { return nil }
         let indexPath = indexPaths[0]
         let identifier = ["section": indexPath.section, "row": indexPath.row]
+        guard let viewController = viewController else { return UIContextMenuConfiguration() }
         
         return UIContextMenuConfiguration(
             identifier: identifier as NSCopying, previewProvider: nil) { _ in
+                
+                let pinTitle = viewController.checkPinStatus(indexPath: indexPath) ? "Открепить" :"Закрепить"
                 return UIMenu(children: [
-                    UIAction(title: "Закрепить") { [weak self] _ in
-#warning("remove")
-                        print("Pin")
+                    UIAction(title: pinTitle) { [weak self] _ in
+                        self?.viewController?.pinTracker(indexPath: indexPath)
                     },
                     
                     UIAction(title: "Редактировать") { [weak self] _ in
-#warning("remove")
-                        print("Edit")
+                        guard let tracker = viewController.storage?.getTracker(
+                            section: indexPath.section,
+                            row: indexPath.row
+                        ) else { return }
+                        self?.viewController?.presentEditTrackerViewController(tracker: tracker)
                     },
                     UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
                         let alert = UIAlertController(
@@ -259,8 +264,7 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
                             message: "Уверены что хотите удалить трекер?",
                             preferredStyle: .actionSheet)
                         let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
-#warning("remove")
-                            print("Delete")
+                            self?.viewController?.deleteTracker(indexPath: indexPath)
                             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
                         }
                         let cancel = UIAlertAction(title: "Отмена", style: .cancel)

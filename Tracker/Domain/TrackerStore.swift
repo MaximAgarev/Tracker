@@ -50,6 +50,25 @@ final class TrackerStore {
         trackerRequest.predicate = nil
     }
     
+    func deleteTracker(trackerCD: TrackerCD) {
+        context.delete(trackerCD)
+        try? context.save()
+    }
+    
+    func pinTracker(trackerCD: TrackerCD) {
+        if let pinnedTracker = trackerCD.pinnedFrom {
+            let unpinnedCategory = TrackerCategoryStore().getCategory(of: pinnedTracker)
+            trackerCD.category = unpinnedCategory
+            trackerCD.pinnedFrom = nil
+            try? context.save()
+        } else {
+            let pinnedCategory = TrackerCategoryStore().getPinnedCategory()
+            trackerCD.pinnedFrom = trackerCD.category?.title
+            trackerCD.category = pinnedCategory
+            try? context.save()
+        }
+    }
+    
     func deleteTrackers(category: TrackerCategoryCD) {
         guard let title = category.title else { return }
         trackerRequest.predicate = NSPredicate(format: "category.title == %@", title)
