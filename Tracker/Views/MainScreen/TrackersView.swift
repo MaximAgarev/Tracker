@@ -70,7 +70,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
             style: .plain,
             target: self,
             action: #selector(didTapAddTracker))
-        navigationItem.leftBarButtonItem?.tintColor = .black
+        navigationItem.leftBarButtonItem?.tintColor = .ypBlack
         
         // Date picker
         let datePicker = UIDatePicker()

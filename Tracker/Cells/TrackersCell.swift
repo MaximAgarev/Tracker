@@ -41,7 +41,7 @@ final class TrackersCell: UICollectionViewCell {
         titleLabel.sizeToFit()
         titleLabel.numberOfLines = 2
         titleLabel.font = .systemFont(ofSize: 12)
-        titleLabel.textColor = .ypWhite
+        titleLabel.textColor = .white
         colorCard.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
