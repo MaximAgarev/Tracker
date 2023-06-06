@@ -11,7 +11,7 @@ protocol TrackersViewControllerProtocol: AnyObject {
     func searchTrackers(text: String)
     func trackButtonDidTap(trackerID: Int)
     func presentChoiceViewController()
-    func presentEditTrackerViewController(tracker: Tracker)
+    func presentEditTrackerViewController(tracker: Tracker, category: String)
     func checkPinStatus(indexPath: IndexPath) -> Bool
     func pinTracker(indexPath: IndexPath)
     func deleteTracker(indexPath: IndexPath)
@@ -87,8 +87,10 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.present(choiceViewController, animated: true)
     }
     
-    func presentEditTrackerViewController(tracker: Tracker) {
+    func presentEditTrackerViewController(tracker: Tracker, category: String) {
         let editTrackerViewController = NewTrackerViewController()
+        editTrackerViewController.editTracker = tracker
+        editTrackerViewController.category = category
         self.present(editTrackerViewController, animated: true)
     }
     

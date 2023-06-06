@@ -110,7 +110,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return colorCollection
     }()
     
-    let buttonsStack: UIStackView = {
+    private let buttonsStack: UIStackView = {
         let buttonsStack = UIStackView()
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
         buttonsStack.axis = .horizontal
@@ -168,7 +168,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         addColorCollection()
         addButtonsStack()
     }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -309,6 +309,42 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
             cell?.configureTableForOneRow()
             createButtonAvailability(element: element, state: false)
         }
+    }
+    
+    func fulfillEditedTracker(title: String, category: String, schedule: String, emoji: Int, color: Int) {
+        headerLabel.text = "Редактирование привычки"
+        
+        trackerNameLabel.text = title
+        createButton.titleEntered = true
+        
+        if category != "" {
+            let cell = trackerCategoryTable.cellForRow(at: [0,0]) as? CategoryCell
+            cell?.configureTableForTwoRows()
+            cell?.valueLabel.text = category
+        }
+        createButton.categorySelected = true
+        
+        if schedule != "" {
+            let cell = trackerCategoryTable.cellForRow(at: [0,1]) as? CategoryCell
+            cell?.configureTableForTwoRows()
+            cell?.valueLabel.text = schedule
+        }
+        createButton.scheduleSelected = true
+        
+        emojiCollection.selectItem(at: [0,emoji], animated: true, scrollPosition: .centeredVertically)
+        emojiCollection.cellForItem(at: [0, emoji])?.backgroundColor = .ypLightGray
+        createButton.emojiSelected = true
+        
+        colorCollection.selectItem(at: [0, color], animated: true, scrollPosition: .centeredVertically)
+        let cell = colorCollection.cellForItem(at: [0, color]) as? CollectionCell
+        if let color = cell?.titleLabel.backgroundColor {
+            let borderColor = color.withAlphaComponent(0.3)
+            cell?.layer.borderColor = borderColor.cgColor
+            cell?.layer.borderWidth = 3
+        }
+        createButton.colorSelected = true
+        
+        createButton.setTitle("Сохранить", for: .normal)
     }
     
     func createButtonAvailability(element: String, state: Bool) {

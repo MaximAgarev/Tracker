@@ -34,7 +34,12 @@ final class TrackerStore {
             newTracker.emoji = tracker.emoji
             newTracker.color = Int64(tracker.color)
         } else if let updatedTracker = searchTracker.first(where: { $0.trackerID == Int64(tracker.id) }) {
-            updatedTracker.category = category
+            if updatedTracker.pinnedFrom != nil {
+                updatedTracker.pinnedFrom = category.title
+                updatedTracker.category = TrackerCategoryStore().getCategory(of: "Закрепленные")
+            } else {
+                updatedTracker.category = category
+            }
             updatedTracker.title = tracker.title
             updatedTracker.schedule = tracker.schedule
             updatedTracker.emoji = tracker.emoji

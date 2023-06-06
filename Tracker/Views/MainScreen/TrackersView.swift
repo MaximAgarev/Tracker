@@ -255,8 +255,12 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
                         guard let tracker = viewController.storage?.getTracker(
                             section: indexPath.section,
                             row: indexPath.row
-                        ) else { return }
-                        self?.viewController?.presentEditTrackerViewController(tracker: tracker)
+                        ),
+                              let category = viewController.storage?.getTrackerUnpinnedCategory(
+                                section: indexPath.section,
+                                row: indexPath.row
+                              ) else { return }
+                        self?.viewController?.presentEditTrackerViewController(tracker: tracker, category: category)
                     },
                     UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
                         let alert = UIAlertController(

@@ -4,8 +4,9 @@ protocol NewTrackerViewControllerProtocol: AnyObject, UITableViewDelegate, UITab
     var storage: TrackerStorageProtocol? { get set }
     var newTrackerView: NewTrackerViewProtocol? { get set }
     var isHabit: Bool { get set }
+    var editTracker: Tracker? { get set }
     
-    var category: String { get set } //TrackerCategory { get set }
+    var category: String { get set }
     var trackerParams: TrackerParams { get set }
         
     func didTapCreateButton()
@@ -16,8 +17,9 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
     var storage: TrackerStorageProtocol?
     var newTrackerView: NewTrackerViewProtocol?
     var isHabit: Bool = true
+    var editTracker: Tracker?
     
-    var category: String = "" //TrackerCategory = TrackerCategory(title: "", trackers: [])
+    var category: String = ""
     var trackerParams: TrackerParams = TrackerParams(id: 0, title: "", schedule: "", emoji: "", color: 0)
     
     override func viewDidLoad() {
@@ -26,6 +28,30 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
         let newTrackerView = NewTrackerView(frame: .zero, viewController: self)
         self.view = newTrackerView
         self.newTrackerView = newTrackerView
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if editTracker != nil {
+            
+            guard let editTracker = editTracker,
+                  let emojiIndex = emojies.firstIndex(of: editTracker.emoji) else { return }
+            
+            (view as? NewTrackerView)?.fulfillEditedTracker(
+                title: editTracker.title,
+                category: category,
+                schedule: editTracker.schedule,
+                emoji: emojiIndex,
+                color: editTracker.color
+            )
+            
+            trackerParams.id = editTracker.id
+            trackerParams.title = editTracker.title
+            trackerParams.schedule = editTracker.schedule
+            trackerParams.emoji = editTracker.emoji
+            trackerParams.color = editTracker.color
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -37,7 +63,7 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
         guard let storage = storage else { return }
         
         let tracker = Tracker(
-            id: storage.trackerID(),
+            id: trackerParams.id == 0 ? storage.trackerID() : trackerParams.id,
             title: trackerParams.title,
             schedule: trackerParams.schedule,
             emoji: trackerParams.emoji,

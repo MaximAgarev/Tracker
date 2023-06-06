@@ -8,6 +8,7 @@ protocol TrackerStorageProtocol {
     func fetchTrackers(date: Date?, searchText: String?)
     func trackerID() -> Int
     func getTracker(section: Int, row: Int) -> Tracker?
+    func getTrackerUnpinnedCategory(section: Int, row: Int) -> String
     func saveTracker(tracker: Tracker, categoryTitle: String)
     func checkPinStatus(section: Int, row: Int) -> Bool
     func pinTracker(section: Int, row: Int)
@@ -109,6 +110,13 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     func getTracker(section: Int, row: Int) -> Tracker? {
         guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return nil }
         return trackerStore.getTracker(tracker)
+    }
+    
+    func getTrackerUnpinnedCategory(section: Int, row: Int) -> String {
+        guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD,
+              let title = tracker.category?.title else { return "" }
+        if title == "Закрепленные" { return tracker.pinnedFrom ?? "" }
+        return title
     }
     
     func saveTracker(tracker: Tracker, categoryTitle: String) {
