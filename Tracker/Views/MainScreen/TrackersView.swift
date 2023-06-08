@@ -12,6 +12,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
     
+    private let analyticsService = AnalyticsService()
+    
 // MARK: - Create elements
     private lazy var emptyImageView: UIImageView = {
         var emptyImage = UIImage(named: "Empty Trackers Tab Image")
@@ -105,6 +107,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func didTapAddTracker() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "add_track"])
         viewController?.presentChoiceViewController()
     }
     
@@ -116,6 +119,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func didTapFilterButton() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "filter"])
         //Реализация функционала в задании не требуется
     }
     
@@ -281,6 +285,7 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
                     },
                     
                     UIAction(title: "Редактировать") { [weak self] _ in
+                        self?.analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
                         guard let tracker = viewController.storage?.getTracker(
                             section: indexPath.section,
                             row: indexPath.row
@@ -292,6 +297,7 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
                         self?.viewController?.presentEditTrackerViewController(tracker: tracker, category: category)
                     },
                     UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
+                        self?.analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "delete"])
                         let alert = UIAlertController(
                             title: nil,
                             message: "Уверены что хотите удалить трекер?",

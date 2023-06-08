@@ -25,6 +25,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     var currentDate: Date = Date().withoutTime()
     var completedTrackers: Set<TrackerRecord> = []
     
+    private let analyticsService = AnalyticsService()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,6 +52,14 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         setView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        analyticsService.report(event: "open", params: ["screen" : "Main", "item" : ""])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        analyticsService.report(event: "close", params: ["screen" : "Main", "item" : ""])
+    }
+    
     @objc
     func setView() {
         self.view = trackersView as? UIView
@@ -68,6 +78,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func trackButtonDidTap(trackerID: Int) {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
         let trackerRecord = TrackerRecord(id: trackerID, date: currentDate.withoutTime())
 
         if completedTrackers.contains(trackerRecord) {
