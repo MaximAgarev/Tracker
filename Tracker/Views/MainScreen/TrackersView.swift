@@ -39,6 +39,19 @@ final class TrackersView: UIView, TrackersViewProtocol {
         return collectionView
     }()
     
+    private lazy var filterButton: UIButton = {
+        let filterButton = UIButton()
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+        filterButton.backgroundColor = .ypBlue
+        filterButton.setTitle("Фильтры", for: .normal)
+        filterButton.setTitleColor(.white, for: .normal)
+        filterButton.titleLabel?.font = .systemFont(ofSize: 17)
+        filterButton.layer.cornerRadius = 16
+        filterButton.layer.masksToBounds = true
+        return filterButton
+    }()
+    
 // MARK: -
     init(frame: CGRect, viewController: TrackersViewControllerProtocol, navigationController: UINavigationController, navigationItem: UINavigationItem) {
         super.init(frame: frame)
@@ -101,6 +114,11 @@ final class TrackersView: UIView, TrackersViewProtocol {
         viewController?.setView()
     }
     
+    @objc
+    func didTapFilterButton() {
+        //Реализация функционала в задании не требуется
+    }
+    
 // MARK: - Add Trackers Collection
     @objc
     func setTrackersCollection() {
@@ -115,6 +133,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         
         collectionView.reloadData()
         setCollectionView()
+        addFilterButton()
     }
     
     func showEmptyTab() {
@@ -144,6 +163,16 @@ final class TrackersView: UIView, TrackersViewProtocol {
         ])
         collectionView.dataSource = self
         collectionView.delegate = self
+    }
+    
+    func addFilterButton() {
+        addSubview(filterButton)
+        NSLayoutConstraint.activate([
+            filterButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 131),
+            filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -131),
+            filterButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -100),
+            filterButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
 }
 
