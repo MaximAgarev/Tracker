@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import SnapshotTesting
+@testable import Tracker
 
 final class TrackerTests: XCTestCase {
 
@@ -30,6 +32,13 @@ final class TrackerTests: XCTestCase {
         measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testViewController() {
+        let vc = TabBarController()
+
+        assertSnapshot(matching: vc, as: .image(traits: .init(userInterfaceStyle: .light)))
+        assertSnapshot(matching: vc, as: .image(traits: .init(userInterfaceStyle: .dark)))
     }
 
 }
