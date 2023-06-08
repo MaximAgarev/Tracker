@@ -44,7 +44,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
         filterButton.backgroundColor = .ypBlue
-        filterButton.setTitle("Фильтры", for: .normal)
+        filterButton.setTitle(NSLocalizedString("filtersButtonTitle", comment: ""), for: .normal)
         filterButton.setTitleColor(.white, for: .normal)
         filterButton.titleLabel?.font = .systemFont(ofSize: 17)
         filterButton.layer.cornerRadius = 16
@@ -74,7 +74,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let navigationBar = navigationController.navigationBar
         
         // Title
-        navigationItem.title = "Трекеры"
+        navigationItem.title = NSLocalizedString("trackersTitle", comment: "")
         navigationBar.prefersLargeTitles = true
         
         // Plus button

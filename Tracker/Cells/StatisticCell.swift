@@ -33,7 +33,7 @@ final class StatisticCell: UIView {
     
     private func setCountLabel() {
         addSubview(countLabel)
-        countLabel.font = .boldSystemFont(ofSize: 34)
+        countLabel.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         countLabel.textColor = .ypBlack
         countLabel.text = String(count)
         countLabel.translatesAutoresizingMaskIntoConstraints = false

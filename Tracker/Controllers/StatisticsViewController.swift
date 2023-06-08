@@ -5,8 +5,8 @@ final class StatisticsViewController: UIViewController {
     private lazy var headerLabel: UILabel = {
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.text = "Статистика"
-        headerLabel.font = .boldSystemFont(ofSize: 34)
+        headerLabel.text = NSLocalizedString("statisticsTitle", comment: "")
+        headerLabel.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         headerLabel.textColor = .ypBlack
         return headerLabel
     }()
@@ -79,7 +79,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addBestPeriod() {
-        bestPeriodCell = StatisticCell(frame: .zero, count: 0, title: "Лучший период")
+        bestPeriodCell = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("bestPeriod", comment: ""))
         guard let cell = bestPeriodCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
@@ -91,7 +91,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addPerfectDays() {
-        perfectDaysCell = StatisticCell(frame: .zero, count: 0, title: "Идеальные дни")
+        perfectDaysCell = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("perfectDays", comment: ""))
         guard let cell = perfectDaysCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +103,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addCompletedTrackers(count: Int) {
-        completedTrackersCell = StatisticCell(frame: .zero, count: count, title: "Трекеров завершено")
+        completedTrackersCell = StatisticCell(frame: .zero, count: count, title: NSLocalizedString("completedTrackers", comment: ""))
         guard let cell = completedTrackersCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +115,7 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addAverageValue() {
-        averageValue = StatisticCell(frame: .zero, count: 0, title: "Среднее значение")
+        averageValue = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("averageValue", comment: ""))
         guard let cell = averageValue else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
