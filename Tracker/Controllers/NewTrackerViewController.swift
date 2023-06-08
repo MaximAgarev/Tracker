@@ -38,12 +38,16 @@ final class NewTrackerViewController: UIViewController, NewTrackerViewController
             guard let editTracker = editTracker,
                   let emojiIndex = emojies.firstIndex(of: editTracker.emoji) else { return }
             
+            let completedTrackers = TrackerRecordStore().loadCompletedTrackers()
+            let completedTrackersCount = completedTrackers.filter({ $0.id == editTracker.id }).count
+            
             (view as? NewTrackerView)?.fulfillEditedTracker(
                 title: editTracker.title,
                 category: category,
                 schedule: editTracker.schedule,
                 emoji: emojiIndex,
-                color: editTracker.color
+                color: editTracker.color,
+                days: completedTrackersCount.days()
             )
             
             trackerParams.id = editTracker.id

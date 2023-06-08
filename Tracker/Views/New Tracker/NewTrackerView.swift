@@ -35,6 +35,41 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         return contentView
     }()
     
+    private lazy var trackButtonsStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private lazy var trackMinusButton: UIButton = {
+        let trackMinusButton = TrackButton()
+        trackMinusButton.translatesAutoresizingMaskIntoConstraints = false
+        trackMinusButton.addTarget(self, action: #selector(didTapTrackMinusButton), for: .touchUpInside)
+        let image = UIImage(named: "Track Button Minus Image")?.withRenderingMode(.alwaysTemplate)
+        trackMinusButton.setImage(image, for: .normal)
+        trackMinusButton.tintColor = UIColor.ypColorSelection[1]
+        return trackMinusButton
+    }()
+    
+    private lazy var trackPlusButton: UIButton = {
+        let trackPlusButton = TrackButton()
+        trackPlusButton.translatesAutoresizingMaskIntoConstraints = false
+        trackPlusButton.addTarget(self, action: #selector(didTapTrackPlusButton), for: .touchUpInside)
+        let image = UIImage(named: "Track Button Plus Image")?.withRenderingMode(.alwaysTemplate)
+        trackPlusButton.setImage(image, for: .normal)
+        trackPlusButton.tintColor = UIColor.ypColorSelection[1]
+        return trackPlusButton
+    }()
+    
+    private lazy var daysCounter: UILabel = {
+        let daysCounter = UILabel()
+        daysCounter.translatesAutoresizingMaskIntoConstraints = false
+        daysCounter.text = ""
+        daysCounter.font = .boldSystemFont(ofSize: 32)
+        daysCounter.textAlignment = .center
+        return daysCounter
+    }()
+    
     private lazy var trackerNameLabel: TextField = {
         let trackerNameLabel = TextField()
         trackerNameLabel.insets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 41)
@@ -159,6 +194,7 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         
         addHeaderLabel()
         addScrollContentView()
+        if viewController.editTracker != nil { addTrackButtonsStack() }
         addTrackerNameLabel()
         addLongNameWarning()
         addTrackerCategoryTable()
@@ -198,14 +234,32 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
             ])
     }
     
+    func addTrackButtonsStack() {
+        contentView.addSubview(trackButtonsStack)
+        trackButtonsStack.distribution = .fillEqually
+        NSLayoutConstraint.deactivate(trackButtonsStack.constraints)
+        NSLayoutConstraint.activate([
+            trackButtonsStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            trackButtonsStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trackButtonsStack.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+        trackButtonsStack.addArrangedSubview(trackMinusButton)
+        trackButtonsStack.addArrangedSubview(daysCounter)
+        trackButtonsStack.addArrangedSubview(trackPlusButton)
+    }
+    
     func addTrackerNameLabel() {
         contentView.addSubview(trackerNameLabel)
         NSLayoutConstraint.activate([
             trackerNameLabel.heightAnchor.constraint(equalToConstant: 75),
-            trackerNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             trackerNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             trackerNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
             ])
+        if viewController?.editTracker != nil {
+            trackerNameLabel.topAnchor.constraint(equalTo: trackButtonsStack.bottomAnchor, constant: 42).isActive = true
+        } else {
+            trackerNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24).isActive = true
+        }
     }
     
     func addLongNameWarning() {
@@ -296,6 +350,20 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         viewController?.didTapCancelButton()
     }
     
+    @objc
+    func didTapTrackMinusButton(){
+        // Функционал кнопки не описан в ТЗ и непонятен, ставлю заглушку
+        let image = UIImage(named: "Track Button Check Image")?.withRenderingMode(.alwaysTemplate)
+        trackMinusButton.setImage(image, for: .normal)
+    }
+    
+    @objc
+    func didTapTrackPlusButton(){
+        // Функционал кнопки не описан в ТЗ и непонятен, ставлю заглушку
+        let image = UIImage(named: "Track Button Check Image")?.withRenderingMode(.alwaysTemplate)
+        trackPlusButton.setImage(image, for: .normal)
+    }
+    
     func updateCategoryCell(value: String?, isCategory: Bool){
         let indexPath: IndexPath = isCategory ? [0,0] : [0, 1]
         let element = isCategory ? "category" : "schedule"
@@ -311,8 +379,10 @@ final class NewTrackerView: UIView, NewTrackerViewProtocol {
         }
     }
     
-    func fulfillEditedTracker(title: String, category: String, schedule: String, emoji: Int, color: Int) {
+    func fulfillEditedTracker(title: String, category: String, schedule: String, emoji: Int, color: Int, days: String) {
         headerLabel.text = "Редактирование привычки"
+        
+        daysCounter.text = String(days)
         
         trackerNameLabel.text = title
         createButton.titleEntered = true

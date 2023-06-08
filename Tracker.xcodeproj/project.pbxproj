@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D011E97B2A310D0600E3E17F /* StatisticCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D011E97A2A310D0600E3E17F /* StatisticCell.swift */; };
 		D01AEB022A1633ED00CD9D83 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */; };
 		D01AEB042A16415100CD9D83 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */; };
 		D01AEB062A1781AF00CD9D83 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01AEB052A1781AF00CD9D83 /* TrackerRecordStore.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D011E97A2A310D0600E3E17F /* StatisticCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCell.swift; sourceTree = "<group>"; };
 		D01AEB012A1633ED00CD9D83 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		D01AEB032A16415100CD9D83 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		D01AEB052A1781AF00CD9D83 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				D089E5DE29DD7C14005F9FAF /* TrackersCell.swift */,
 				D0FF0D5229E4898200837748 /* CollectionCell.swift */,
 				D0CACCC129F2E4A300BD9D91 /* CategoryCell.swift */,
+				D011E97A2A310D0600E3E17F /* StatisticCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 				D0CACCCA29F5451E00BD9D91 /* Weekdays.swift in Sources */,
 				D0840C732A1E7AAC00E7C2D7 /* EmojiColorCollectionView.swift in Sources */,
 				D0F9C41729DA11E6009C7686 /* SceneDelegate.swift in Sources */,
+				D011E97B2A310D0600E3E17F /* StatisticCell.swift in Sources */,
 				D089E5D529DA2BC7005F9FAF /* UIColor+Extensions.swift in Sources */,
 				D0ACD29229F94876000FB7F3 /* CreateTrackerButton.swift in Sources */,
 				D0EEE2E929EDBF260021576D /* CategoriesViewController.swift in Sources */,

@@ -6,7 +6,7 @@ final class StatisticsViewController: UIViewController {
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         headerLabel.text = "Статистика"
-        headerLabel.font = .systemFont(ofSize: 34)
+        headerLabel.font = .boldSystemFont(ofSize: 34)
         headerLabel.textColor = .ypBlack
         return headerLabel
     }()
@@ -26,13 +26,31 @@ final class StatisticsViewController: UIViewController {
         return emptyLabel
     }()
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .ypWhite
-        showEmptyTab()
+        
+        let completedTrackers = TrackerRecordStore().loadCompletedTrackers()
+        
+        addHeaderLabel()
+        if completedTrackers.count == 0 {
+            showEmptyTab()
+        } else {
+            addBestPeriod()
+            addPerfectDays()
+            addCompletedTrackers(count: completedTrackers.count)
+            addAverageValue()
+        }
+    }
+    
+    func addHeaderLabel() {
+        view.addSubview(headerLabel)
+        NSLayoutConstraint.activate([
+            headerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            headerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44)
+        ])
     }
     
     func showEmptyTab() {
@@ -44,6 +62,50 @@ final class StatisticsViewController: UIViewController {
             emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
             emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    func addBestPeriod() {
+        let cell = StatisticCell(frame: .zero, count: 0, title: "Лучший период")
+        view.addSubview(cell)
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 77)
+        ])
+    }
+    
+    func addPerfectDays() {
+        let cell = StatisticCell(frame: .zero, count: 0, title: "Идеальные дни")
+        view.addSubview(cell)
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 179)
+        ])
+    }
+    
+    func addCompletedTrackers(count: Int) {
+        let cell = StatisticCell(frame: .zero, count: count, title: "Трекеров завершено")
+        view.addSubview(cell)
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 281)
+        ])
+    }
+    
+    func addAverageValue() {
+        let cell = StatisticCell(frame: .zero, count: 0, title: "Среднее значение")
+        view.addSubview(cell)
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 383)
         ])
     }
     
