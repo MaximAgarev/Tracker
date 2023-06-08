@@ -26,6 +26,12 @@ final class StatisticsViewController: UIViewController {
         return emptyLabel
     }()
     
+    var bestPeriodCell: StatisticCell?
+    var perfectDaysCell: StatisticCell?
+    var completedTrackersCell: StatisticCell?
+    var averageValue: StatisticCell?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,6 +48,13 @@ final class StatisticsViewController: UIViewController {
             addCompletedTrackers(count: completedTrackers.count)
             addAverageValue()
         }
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateStatistics),
+            name: NSNotification.Name(rawValue: "updateStatistics"),
+            object: nil
+        )
     }
     
     func addHeaderLabel() {
@@ -66,7 +79,8 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addBestPeriod() {
-        let cell = StatisticCell(frame: .zero, count: 0, title: "Лучший период")
+        bestPeriodCell = StatisticCell(frame: .zero, count: 0, title: "Лучший период")
+        guard let cell = bestPeriodCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -77,7 +91,8 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addPerfectDays() {
-        let cell = StatisticCell(frame: .zero, count: 0, title: "Идеальные дни")
+        perfectDaysCell = StatisticCell(frame: .zero, count: 0, title: "Идеальные дни")
+        guard let cell = perfectDaysCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -88,7 +103,8 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addCompletedTrackers(count: Int) {
-        let cell = StatisticCell(frame: .zero, count: count, title: "Трекеров завершено")
+        completedTrackersCell = StatisticCell(frame: .zero, count: count, title: "Трекеров завершено")
+        guard let cell = completedTrackersCell else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -99,7 +115,8 @@ final class StatisticsViewController: UIViewController {
     }
     
     func addAverageValue() {
-        let cell = StatisticCell(frame: .zero, count: 0, title: "Среднее значение")
+        averageValue = StatisticCell(frame: .zero, count: 0, title: "Среднее значение")
+        guard let cell = averageValue else { return }
         view.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -107,6 +124,12 @@ final class StatisticsViewController: UIViewController {
             cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 383)
         ])
+    }
+    
+    @objc
+    func updateStatistics() {
+        let completedTrackers = TrackerRecordStore().loadCompletedTrackers()
+        completedTrackersCell?.countLabel.text = String(completedTrackers.count)
     }
     
 }

@@ -79,6 +79,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         guard let storage = storage else { return }
         storage.saveCompletedTrackers(completedTrackers: completedTrackers)
         setView()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateStatistics"), object: nil)
     }
     
     func presentChoiceViewController() {
