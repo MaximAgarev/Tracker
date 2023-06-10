@@ -197,8 +197,7 @@ extension TrackersView: UICollectionViewDataSource {
         
         cell.trackerID = trackerID
         cell.colorCard.backgroundColor = UIColor.ypColorSelection[tracker?.color ?? 0]
-#warning("tracker id back")
-        cell.titleLabel.text = tracker?.id.description//.title
+        cell.titleLabel.text = tracker?.title
         cell.emodjiLabel.text = tracker?.emoji
         cell.daysCountLabel.text = daysCompleted(trackerID: trackerID).days()
         cell.trackButton.trackerID = trackerID
