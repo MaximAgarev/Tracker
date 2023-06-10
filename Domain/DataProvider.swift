@@ -138,6 +138,7 @@ final class TrackerStorageCoreData: NSObject, TrackerStorageProtocol {
     func deleteTracker(section: Int, row: Int) {
         guard let tracker = fetchedResultsController.sections?[section].objects?[row] as? TrackerCD else { return }
         trackerStore.deleteTracker(trackerCD: tracker)
+        recordStore.removeDeletedTrackerRecords(id: tracker.trackerID)
     }
 
 // MARK: - Categories

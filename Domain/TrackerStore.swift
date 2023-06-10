@@ -57,6 +57,7 @@ final class TrackerStore {
     
     func deleteTracker(trackerCD: TrackerCD) {
         context.delete(trackerCD)
+        TrackerRecordStore().removeDeletedTrackerRecords(id: trackerCD.trackerID)
         try? context.save()
     }
     
@@ -94,17 +95,8 @@ final class TrackerStore {
     }
     
     func trackerID() -> Int {
-        var maxID = 0
-        
-        trackerRequest.predicate = nil
-        let trackers = try? context.fetch(trackerRequest)
-        guard var trackers = trackers else { return 0 }
-        
-        if !trackers.isEmpty {
-            trackers.sort( by: { $0.trackerID > $1.trackerID } )
-            maxID = Int(trackers[0].trackerID + 1)
-        }
-        
-        return maxID
+        let trackerID = UserDefaults.standard.integer(forKey: "trackerID")
+        UserDefaults.standard.set(trackerID + 1, forKey: "trackerID")
+        return trackerID
     }
 }

@@ -53,11 +53,11 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        analyticsService.report(event: "open", params: ["screen" : "Main", "item" : ""])
+        analyticsService.report(event: "open", params: ["screen" : "Main"])
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        analyticsService.report(event: "close", params: ["screen" : "Main", "item" : ""])
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
     }
     
     @objc
@@ -131,5 +131,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     func deleteTracker(indexPath: IndexPath) {
         storage?.deleteTracker(section: indexPath.section, row: indexPath.row)
         setView()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateStatistics"), object: nil)
     }
 }

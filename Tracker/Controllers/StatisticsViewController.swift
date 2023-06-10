@@ -26,28 +26,27 @@ final class StatisticsViewController: UIViewController {
         return emptyLabel
     }()
     
+    private lazy var statisticView: UIView = {
+        let statisticView = UIView()
+        statisticView.translatesAutoresizingMaskIntoConstraints = false
+        return statisticView
+    }()
+    
     var bestPeriodCell: StatisticCell?
     var perfectDaysCell: StatisticCell?
     var completedTrackersCell: StatisticCell?
-    var averageValue: StatisticCell?
+    var averageValueCell: StatisticCell?
     
+    var viewIsEmpty: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .ypWhite
         
-        let completedTrackers = TrackerRecordStore().loadCompletedTrackers()
-        
         addHeaderLabel()
-        if completedTrackers.count == 0 {
-            showEmptyTab()
-        } else {
-            addBestPeriod()
-            addPerfectDays()
-            addCompletedTrackers(count: completedTrackers.count)
-            addAverageValue()
-        }
+        setView()
+        updateStatistics()
         
         NotificationCenter.default.addObserver(
             self,
@@ -55,6 +54,20 @@ final class StatisticsViewController: UIViewController {
             name: NSNotification.Name(rawValue: "updateStatistics"),
             object: nil
         )
+    }
+    
+    func setView() {
+        if viewIsEmpty {
+            emptyImageView.removeFromSuperview()
+            emptyLabel.removeFromSuperview()
+            showStatisticView()
+            viewIsEmpty = false
+        } else {
+            for view in statisticView.subviews { view.removeFromSuperview() }
+            statisticView.removeFromSuperview()
+            showEmptyView()
+            viewIsEmpty = true
+        }
     }
     
     func addHeaderLabel() {
@@ -66,10 +79,9 @@ final class StatisticsViewController: UIViewController {
         ])
     }
     
-    func showEmptyTab() {
+    func showEmptyView() {
         view.addSubview(emptyImageView)
         view.addSubview(emptyLabel)
-        
         NSLayoutConstraint.activate([
             emptyImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 402),
             emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -78,14 +90,28 @@ final class StatisticsViewController: UIViewController {
         ])
     }
     
+    func showStatisticView() {
+        view.addSubview(statisticView)
+        addBestPeriod()
+        addPerfectDays()
+        addCompletedTrackers(count: 0)
+        addAverageValue()
+        NSLayoutConstraint.activate([
+            statisticView.topAnchor.constraint(equalTo: view.topAnchor),
+            statisticView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            statisticView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            statisticView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
     func addBestPeriod() {
         bestPeriodCell = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("bestPeriod", comment: ""))
         guard let cell = bestPeriodCell else { return }
-        view.addSubview(cell)
+        statisticView.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.leadingAnchor.constraint(equalTo: statisticView.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: statisticView.trailingAnchor, constant: -16),
             cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 77)
         ])
     }
@@ -93,11 +119,11 @@ final class StatisticsViewController: UIViewController {
     func addPerfectDays() {
         perfectDaysCell = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("perfectDays", comment: ""))
         guard let cell = perfectDaysCell else { return }
-        view.addSubview(cell)
+        statisticView.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.leadingAnchor.constraint(equalTo: statisticView.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: statisticView.trailingAnchor, constant: -16),
             cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 179)
         ])
     }
@@ -105,23 +131,23 @@ final class StatisticsViewController: UIViewController {
     func addCompletedTrackers(count: Int) {
         completedTrackersCell = StatisticCell(frame: .zero, count: count, title: NSLocalizedString("completedTrackers", comment: ""))
         guard let cell = completedTrackersCell else { return }
-        view.addSubview(cell)
+        statisticView.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.leadingAnchor.constraint(equalTo: statisticView.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: statisticView.trailingAnchor, constant: -16),
             cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 281)
         ])
     }
     
     func addAverageValue() {
-        averageValue = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("averageValue", comment: ""))
-        guard let cell = averageValue else { return }
-        view.addSubview(cell)
+        averageValueCell = StatisticCell(frame: .zero, count: 0, title: NSLocalizedString("averageValue", comment: ""))
+        guard let cell = averageValueCell else { return }
+        statisticView.addSubview(cell)
         cell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            cell.leadingAnchor.constraint(equalTo: statisticView.leadingAnchor, constant: 16),
+            cell.trailingAnchor.constraint(equalTo: statisticView.trailingAnchor, constant: -16),
             cell.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 383)
         ])
     }
@@ -129,7 +155,12 @@ final class StatisticsViewController: UIViewController {
     @objc
     func updateStatistics() {
         let completedTrackers = TrackerRecordStore().loadCompletedTrackers()
-        completedTrackersCell?.countLabel.text = String(completedTrackers.count)
+        let statisticIsEmpty = (completedTrackers.count == 0)
+
+        if statisticIsEmpty != viewIsEmpty { setView() }
+        
+        if !statisticIsEmpty {
+            completedTrackersCell?.countLabel.text = String(completedTrackers.count)
+        }
     }
-    
 }
