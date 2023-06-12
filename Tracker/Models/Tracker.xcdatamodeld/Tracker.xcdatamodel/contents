@@ -7,6 +7,7 @@
     <entity name="TrackerCD" representedClassName="TrackerCD" syncable="YES" codeGenerationType="class">
         <attribute name="color" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="emoji" attributeType="String"/>
+        <attribute name="pinnedFrom" optional="YES" attributeType="String"/>
         <attribute name="schedule" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="trackerID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

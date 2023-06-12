@@ -72,7 +72,8 @@ extension ScheduleViewController: UITableViewDataSource {
         }
         cell.backgroundColor = .ypBackground
         cell.titleLabel.text = Weekday.longName[indexPath.row]
-        let isOn = selectedSchedule?.range(of: Weekday.shortName[indexPath.row]) != nil
+        var isOn = selectedSchedule?.range(of: Weekday.shortName[indexPath.row]) != nil
+        if selectedSchedule == Weekday.everyDay { isOn = true }
         addSwitch(cell: cell, identifier: indexPath.row, isOn: isOn)
         return cell
     }

@@ -10,7 +10,11 @@ protocol TrackersViewControllerProtocol: AnyObject {
     func setView()
     func searchTrackers(text: String)
     func trackButtonDidTap(trackerID: Int)
-    func presentNewTrackerViewController()
+    func presentChoiceViewController()
+    func presentEditTrackerViewController(tracker: Tracker, category: String)
+    func checkPinStatus(indexPath: IndexPath) -> Bool
+    func pinTracker(indexPath: IndexPath)
+    func deleteTracker(indexPath: IndexPath)
 }
 
 final class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
@@ -20,6 +24,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     var categories: [TrackerCategory] = []
     var currentDate: Date = Date().withoutTime()
     var completedTrackers: Set<TrackerRecord> = []
+    
+    private let analyticsService = AnalyticsService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +52,14 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         setView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        analyticsService.report(event: "open", params: ["screen" : "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
+    }
+    
     @objc
     func setView() {
         self.view = trackersView as? UIView
@@ -64,6 +78,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func trackButtonDidTap(trackerID: Int) {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
         let trackerRecord = TrackerRecord(id: trackerID, date: currentDate.withoutTime())
 
         if completedTrackers.contains(trackerRecord) {
@@ -75,12 +90,20 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         guard let storage = storage else { return }
         storage.saveCompletedTrackers(completedTrackers: completedTrackers)
         setView()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateStatistics"), object: nil)
     }
     
-    func presentNewTrackerViewController() {
-        let newTrackerViewController = ChoiceViewController()
-        newTrackerViewController.modalPresentationStyle = .popover
-        self.present(newTrackerViewController, animated: true)
+    func presentChoiceViewController() {
+        let choiceViewController = ChoiceViewController()
+        choiceViewController.modalPresentationStyle = .popover
+        self.present(choiceViewController, animated: true)
+    }
+    
+    func presentEditTrackerViewController(tracker: Tracker, category: String) {
+        let editTrackerViewController = NewTrackerViewController()
+        editTrackerViewController.editTracker = tracker
+        editTrackerViewController.category = category
+        self.present(editTrackerViewController, animated: true)
     }
     
     func firstLaunchOnboarding() {
@@ -94,5 +117,20 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
             self.view.window?.rootViewController?.present(onboardingViewController, animated: false)
             UserDefaults.standard.set(true, forKey: onboardingKey)
         }
+    }
+    
+    func checkPinStatus(indexPath: IndexPath) -> Bool {
+        return storage?.checkPinStatus(section: indexPath.section, row: indexPath.row) ?? false
+    }
+    
+    func pinTracker(indexPath: IndexPath) {
+        storage?.pinTracker(section: indexPath.section, row: indexPath.row)
+        setView()
+    }
+    
+    func deleteTracker(indexPath: IndexPath) {
+        storage?.deleteTracker(section: indexPath.section, row: indexPath.row)
+        setView()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateStatistics"), object: nil)
     }
 }

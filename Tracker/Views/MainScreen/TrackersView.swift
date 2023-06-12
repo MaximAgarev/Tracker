@@ -12,6 +12,8 @@ final class TrackersView: UIView, TrackersViewProtocol {
     var navigationController: UINavigationController?
     var navigationItem: UINavigationItem?
     
+    private let analyticsService = AnalyticsService()
+    
 // MARK: - Create elements
     private lazy var emptyImageView: UIImageView = {
         var emptyImage = UIImage(named: "Empty Trackers Tab Image")
@@ -39,6 +41,19 @@ final class TrackersView: UIView, TrackersViewProtocol {
         return collectionView
     }()
     
+    private lazy var filterButton: UIButton = {
+        let filterButton = UIButton()
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+        filterButton.backgroundColor = .ypBlue
+        filterButton.setTitle(NSLocalizedString("filtersButtonTitle", comment: ""), for: .normal)
+        filterButton.setTitleColor(.white, for: .normal)
+        filterButton.titleLabel?.font = .systemFont(ofSize: 17)
+        filterButton.layer.cornerRadius = 16
+        filterButton.layer.masksToBounds = true
+        return filterButton
+    }()
+    
 // MARK: -
     init(frame: CGRect, viewController: TrackersViewControllerProtocol, navigationController: UINavigationController, navigationItem: UINavigationItem) {
         super.init(frame: frame)
@@ -61,7 +76,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         let navigationBar = navigationController.navigationBar
         
         // Title
-        navigationItem.title = "Трекеры"
+        navigationItem.title = NSLocalizedString("trackersTitle", comment: "")
         navigationBar.prefersLargeTitles = true
         
         // Plus button
@@ -70,7 +85,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
             style: .plain,
             target: self,
             action: #selector(didTapAddTracker))
-        navigationItem.leftBarButtonItem?.tintColor = .black
+        navigationItem.leftBarButtonItem?.tintColor = .ypBlack
         
         // Date picker
         let datePicker = UIDatePicker()
@@ -92,13 +107,20 @@ final class TrackersView: UIView, TrackersViewProtocol {
     
     @objc
     func didTapAddTracker() {
-        viewController?.presentNewTrackerViewController()
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "add_track"])
+        viewController?.presentChoiceViewController()
     }
     
     @objc
     func dateChanged(_ sender: UIDatePicker) {
         viewController?.currentDate = sender.date.withoutTime()
         viewController?.setView()
+    }
+    
+    @objc
+    func didTapFilterButton() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "filter"])
+        //Реализация функционала в задании не требуется
     }
     
 // MARK: - Add Trackers Collection
@@ -115,6 +137,7 @@ final class TrackersView: UIView, TrackersViewProtocol {
         
         collectionView.reloadData()
         setCollectionView()
+        addFilterButton()
     }
     
     func showEmptyTab() {
@@ -145,6 +168,16 @@ final class TrackersView: UIView, TrackersViewProtocol {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
+    
+    func addFilterButton() {
+        addSubview(filterButton)
+        NSLayoutConstraint.activate([
+            filterButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 131),
+            filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -131),
+            filterButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -100),
+            filterButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
 }
 
 //MARK: - Extensions
@@ -159,7 +192,7 @@ extension TrackersView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackersCell else { return UICollectionViewCell() }
-        let tracker = viewController?.storage?.getTracker(section: indexPath.section, index: indexPath.row)
+        let tracker = viewController?.storage?.getTracker(section: indexPath.section, row: indexPath.row)
         let trackerID = tracker?.id ?? 0
         
         cell.trackerID = trackerID
@@ -234,6 +267,62 @@ extension TrackersView: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+        let indexPath = indexPaths[0]
+        let identifier = ["section": indexPath.section, "row": indexPath.row]
+        guard let viewController = viewController else { return UIContextMenuConfiguration() }
+        
+        return UIContextMenuConfiguration(
+            identifier: identifier as NSCopying, previewProvider: nil) { _ in
+                
+                let pinTitle = viewController.checkPinStatus(indexPath: indexPath) ? "Открепить" :"Закрепить"
+                return UIMenu(children: [
+                    UIAction(title: pinTitle) { [weak self] _ in
+                        self?.viewController?.pinTracker(indexPath: indexPath)
+                    },
+                    
+                    UIAction(title: "Редактировать") { [weak self] _ in
+                        self?.analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
+                        guard let tracker = viewController.storage?.getTracker(
+                            section: indexPath.section,
+                            row: indexPath.row
+                        ),
+                              let category = viewController.storage?.getTrackerUnpinnedCategory(
+                                section: indexPath.section,
+                                row: indexPath.row
+                              ) else { return }
+                        self?.viewController?.presentEditTrackerViewController(tracker: tracker, category: category)
+                    },
+                    UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
+                        self?.analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "delete"])
+                        let alert = UIAlertController(
+                            title: nil,
+                            message: "Уверены что хотите удалить трекер?",
+                            preferredStyle: .actionSheet)
+                        let action = UIAlertAction(title: "Удалить", style: .destructive) {_ in
+                            self?.viewController?.deleteTracker(indexPath: indexPath)
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTrackers"), object: nil)
+                        }
+                        let cancel = UIAlertAction(title: "Отмена", style: .cancel)
+                        alert.addAction(action)
+                        alert.addAction(cancel)
+                        let viewController = self?.viewController as? UIViewController
+                        viewController?.present(alert, animated: true)
+                    })
+                ])
+            }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let identifier = configuration.identifier as? Dictionary<String, Int>,
+              let row = identifier["row"],
+              let section = identifier["section"],
+              let cell = collectionView.cellForItem(at: IndexPath(row: row, section: section)) as? TrackersCell
+        else { return nil }
+        return UITargetedPreview(view: cell.colorCard)
     }
 }
 
